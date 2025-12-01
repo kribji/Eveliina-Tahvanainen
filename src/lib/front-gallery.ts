@@ -4,7 +4,8 @@ export type FrontWork = {
   src: string;
   alt: string;
   align: FrontWorkAlign;
-  width: string; // tailwind width class
+  width: string;
+  href?: string;
 };
 
 export const frontWorks: FrontWork[] = [
