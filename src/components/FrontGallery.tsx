@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { frontWorks } from '@/lib/front-gallery';
 
 type RevealItemProps = {
@@ -69,8 +70,11 @@ export default function FrontGallery() {
             className={`relative ${work.width} ${work.align === 'right' ? 'ml-auto' : ''}`}
             parallaxFactor={0.01 + index * 0.002}
           >
-            <div className="group relative w-full overflow-visible">
-              {/* Soft depth shadow (Option 1) */}
+            <Link
+              href={work.href ?? '/work'} // default to /work if no href
+              className="group relative block w-full overflow-visible cursor-pointer"
+            >
+              {/* Soft depth shadow */}
               <div
                 className="pointer-events-none absolute inset-0 rounded-sm shadow-[0_20px_45px_rgba(0,0,0,0.25)] opacity-40 transition-opacity duration-500 ease-out group-hover:opacity-80"
                 aria-hidden="true"
@@ -81,7 +85,7 @@ export default function FrontGallery() {
                   <Image src={work.src} alt={work.alt} fill className="object-cover" />
                 </div>
               </div>
-            </div>
+            </Link>
           </RevealItem>
         ))}
       </div>

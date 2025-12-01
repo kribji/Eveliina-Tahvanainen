@@ -37,14 +37,18 @@ export default function CategoryPage() {
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-16">
+      {/* Back button */}
+      <div className="mb-8">
+        <Link
+          href="/work"
+          className="text-xs tracking-body text-text/60 underline-offset-4 hover:underline"
+        >
+          ←
+        </Link>
+      </div>
       <section className="grid gap-8 md:grid-cols-3">
         {items.map((product) => (
           <Link key={product.id} href={`/work/${category}/${product.slug}`} className="group block">
-            {/* title above image, centered, subtle, with fade on hover */}
-            <p className="mb-3 text-center text-xs tracking-[0.15em] text-text/70 transition-opacity duration-500 group-hover:opacity-60">
-              {product.title}
-            </p>
-
             <div className="relative aspect-[3/4] w-full overflow-hidden">
               <Image
                 src={product.image}

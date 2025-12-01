@@ -7,6 +7,8 @@ export type Product = {
   category: ProductCategory;
   image: string;
   hoverImage: string;
+  description: string;
+  price?: number;
 };
 
 export const products: Product[] = [
@@ -15,32 +17,40 @@ export const products: Product[] = [
     slug: 'ceramic-cups-01',
     title: 'Stacked stoneware cups',
     category: 'ceramics',
-    image: '/ceramics/ceramic-cups-01-main.jpeg',
-    hoverImage: '/ceramics/ceramic-cups-01-alt.jpeg',
+    image: '/ceramics.jpeg',
+    hoverImage: '/ceramics3.jpeg',
+    description:
+      'Hand-thrown stoneware cups with a soft matte glaze. Each piece is unique, shaped by the natural pull of the material.',
   },
   {
     id: 'ceramic-bowls-01',
     slug: 'ceramic-bowls-01',
     title: 'Soft glazed bowls',
     category: 'ceramics',
-    image: '/ceramics/ceramic-bowls-01-main.jpeg',
-    hoverImage: '/ceramics/ceramic-bowls-01-alt.jpeg',
+    image: '/bowls.jpeg',
+    hoverImage: '/bowls2.jpeg',
+    description:
+      'Minimalist bowls with a speckled soft glaze. Designed for everyday rituals and shared meals.',
   },
   {
     id: 'sculpture-foamglass-01',
     slug: 'sculpture-foamglass-01',
     title: 'Foam glass formation I',
     category: 'sculptures',
-    image: '/sculptures/sculpture-01-main.jpeg',
-    hoverImage: '/sculptures/sculpture-01-alt.jpeg',
+    image: '/sculptures.jpeg',
+    hoverImage: '/sculptures2.jpeg',
+    description:
+      'A sculptural exploration of foam glass, capturing the fragile balance between density and air.',
   },
   {
     id: 'jewelry-heart-01',
     slug: 'jewelry-heart-01',
     title: 'Hanging stone heart',
     category: 'jewelry',
-    image: '/jewelry/jewelry-01-main.jpeg',
-    hoverImage: '/jewelry/jewelry-01-alt.jpeg',
+    image: '/jewelry.jpeg',
+    hoverImage: '/jewelry2.jpeg',
+    description:
+      'A wearable stone heart, carved and formed by hand. A personal piece meant to be carried close.',
   },
 ];
 
