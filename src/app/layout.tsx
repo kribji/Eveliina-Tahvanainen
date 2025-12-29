@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react';
-import { Gulzar } from 'next/font/google';
+import { Roboto_Condensed } from 'next/font/google';
 import './globals.css';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
-const gulzar = Gulzar({
+import { RootClientLayout } from '@/components/RootClientLayout';
+
+const robotoCondensed = Roboto_Condensed({
   subsets: ['latin'],
-  weight: ['400'],
+  weight: ['300', '400', '700'],
 });
 
 export const metadata = {
@@ -17,9 +17,11 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className={gulzar.className}>
-        <Header />
-        <main>{children}</main>
+      <body className={robotoCondensed.className}>
+        {/* Wrap everything in the client-side cart provider, header, drawer, footer */}
+        <RootClientLayout>
+          <main>{children}</main>
+        </RootClientLayout>
       </body>
     </html>
   );
