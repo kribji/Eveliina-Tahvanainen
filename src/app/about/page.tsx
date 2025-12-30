@@ -1,6 +1,5 @@
 // src/app/about/page.tsx
 import Image from 'next/image';
-import Footer from '@/components/Footer';
 
 export default function AboutPage() {
   return (
@@ -56,8 +55,6 @@ export default function AboutPage() {
           </p>
         </section>
       </div>
-
-      <Footer />
     </>
   );
 }

@@ -6,32 +6,41 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
 
+const THRESHOLD = 260;
+
 export default function Header() {
   const pathname = usePathname();
   const isHome = pathname === '/';
   const { itemCount, toggleCart } = useCart();
 
-  const [showSticky, setShowSticky] = useState(() => !isHome);
+  // Only track whether we've scrolled past threshold on HOME
+  const [pastThreshold, setPastThreshold] = useState(false);
 
   useEffect(() => {
-    if (!isHome) return; // non-home stays sticky
+    if (!isHome) return;
 
-    const THRESHOLD = 260;
-    const onScroll = () => setShowSticky(window.scrollY > THRESHOLD);
+    const onScroll = () => setPastThreshold(window.scrollY > THRESHOLD);
 
-    onScroll();
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
+    // initial sync (but NOT synchronous setState inside effect body)
+    const raf = window.requestAnimationFrame(onScroll);
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', onScroll);
+    };
   }, [isHome]);
+
+  // ✅ derived (no setState needed)
+  const showSticky = !isHome || pastThreshold;
 
   return (
     <header className={`${showSticky ? 'fixed' : 'hidden'} inset-x-0 top-0 z-50`}>
-      <div className="bg-white/70 backdrop-blur-[2px]">
-        {/* tighter, more “hard left” */}
+      {/* Make this match your background color */}
+      <div className="bg-[#FFF9F3]">
         <div className="px-3 py-1.5">
           {/* DESKTOP */}
           <div className="hidden h-14 items-center md:flex">
-            {/* LEFT GROUP: logo + nav */}
             <div className="flex items-center gap-10">
               <Link href="/" aria-label="Home" className="flex-shrink-0">
                 <div className="relative h-11 w-24">
@@ -45,29 +54,28 @@ export default function Header() {
                 </div>
               </Link>
 
-              <nav className="flex items-center gap-10 text-[1.05rem] tracking-[0.14em] text-text/80">
-                <Link href="/work" className="hover:text-text">
-                  work
-                </Link>
-                <Link href="/shop" className="hover:text-text">
+              <nav className="flex items-center gap-10 text-[1.05rem] tracking-[0.14em] text-[#4A3C30]/80">
+                <Link href="/shop" className="hover:text-[#4A3C30]">
                   shop
                 </Link>
-                <Link href="/about" className="hover:text-text">
+                <Link href="/exhibition" className="hover:text-[#4A3C30]">
+                  exhibition
+                </Link>
+                <Link href="/about" className="hover:text-[#4A3C30]">
                   about
                 </Link>
               </nav>
             </div>
 
-            {/* BAG right */}
             <button
               type="button"
               onClick={toggleCart}
-              className="ml-auto text-[1.05rem] tracking-[0.14em] text-text/80 hover:text-text"
+              className="ml-auto text-[1.05rem] tracking-[0.14em] text-[#4A3C30]/80 hover:text-[#4A3C30]"
             >
               <span className="relative inline-block">
                 bag
                 {itemCount > 0 && (
-                  <span className="absolute -right-3 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-text px-1 text-[0.65rem] leading-none text-background">
+                  <span className="absolute -right-3 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#4A3C30] px-1 text-[0.65rem] leading-none text-[#FFF9F3]">
                     {itemCount}
                   </span>
                 )}
@@ -92,12 +100,12 @@ export default function Header() {
             <button
               type="button"
               onClick={toggleCart}
-              className="text-[0.95rem] tracking-[0.12em] text-text/80"
+              className="text-[0.95rem] tracking-[0.12em] text-[#4A3C30]/80"
             >
               <span className="relative inline-block">
                 bag
                 {itemCount > 0 && (
-                  <span className="absolute -right-3 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-text px-1 text-[0.65rem] leading-none text-background">
+                  <span className="absolute -right-3 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#4A3C30] px-1 text-[0.65rem] leading-none text-[#FFF9F3]">
                     {itemCount}
                   </span>
                 )}

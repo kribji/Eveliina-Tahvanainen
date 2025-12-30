@@ -10,8 +10,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: '#FDF3EA', // main background
-        accent: '#B19074', // gradient / highlight
+        background: '#FFF9F3', // main background
         text: '#4A3C30', // main text color
       },
       letterSpacing: {

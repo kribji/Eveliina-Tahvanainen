@@ -62,7 +62,7 @@ function RevealItem({ children, className = '', parallaxFactor = 0.02 }: RevealI
 
 export default function FrontGallery() {
   return (
-    <section className="bg-gradient-to-b from-background via-[#e3c5a5] to-accent/80 py-16 pb-32 md:pb-48">
+    <section className="from-background py-16 pb-32 md:pb-48">
       <div className="mx-auto flex max-w-5xl flex-col gap-10 px-4">
         {frontWorks.map((work, index) => (
           <RevealItem
@@ -71,7 +71,7 @@ export default function FrontGallery() {
             parallaxFactor={0.01 + index * 0.002}
           >
             <Link
-              href={work.href ?? '/work'} // default to /work if no href
+              href={work.href ?? '/exhibition'} // default to /work if no href
               className="group relative block w-full overflow-visible cursor-pointer"
             >
               {/* Soft depth shadow */}
