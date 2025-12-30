@@ -12,6 +12,7 @@ export default function Header() {
   const pathname = usePathname();
   const isHome = pathname === '/';
   const { itemCount, toggleCart } = useCart();
+  const isActive = (href: string) => pathname === href;
 
   // Only track whether we've scrolled past threshold on HOME
   const [pastThreshold, setPastThreshold] = useState(false);
@@ -54,14 +55,31 @@ export default function Header() {
                 </div>
               </Link>
 
-              <nav className="flex items-center gap-10 text-[1.05rem] tracking-[0.14em] text-[#4A3C30]/80">
-                <Link href="/shop" className="hover:text-[#4A3C30]">
+              <nav className="flex items-center gap-10 text-[1.05rem] tracking-[0.14em]">
+                <Link
+                  href="/shop"
+                  className={`hover:text-[#4A3C30] ${
+                    isActive('/shop') ? 'text-[#4A3C30]' : 'text-[#4A3C30]/80'
+                  }`}
+                >
                   shop
                 </Link>
-                <Link href="/exhibition" className="hover:text-[#4A3C30]">
+
+                <Link
+                  href="/exhibition"
+                  className={`hover:text-[#4A3C30] ${
+                    isActive('/exhibition') ? 'text-[#4A3C30]' : 'text-[#4A3C30]/80'
+                  }`}
+                >
                   exhibition
                 </Link>
-                <Link href="/about" className="hover:text-[#4A3C30]">
+
+                <Link
+                  href="/about"
+                  className={`hover:text-[#4A3C30] ${
+                    isActive('/about') ? 'text-[#4A3C30]' : 'text-[#4A3C30]/80'
+                  }`}
+                >
                   about
                 </Link>
               </nav>

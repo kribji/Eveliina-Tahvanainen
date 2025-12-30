@@ -40,7 +40,7 @@ export default function CategoryPage() {
       {/* Back button */}
       <div className="mb-8">
         <Link
-          href="/work"
+          href="/shop"
           className="text-xs tracking-body text-text/60 underline-offset-4 hover:underline"
         >
           ←

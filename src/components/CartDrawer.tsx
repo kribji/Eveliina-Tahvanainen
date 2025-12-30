@@ -5,92 +5,130 @@ import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 
 export default function CartDrawer() {
-  const { items, isOpen, closeCart, total, removeFromCart } = useCart();
+  const { isOpen, closeCart, items, itemCount, total, removeFromCart, clearCart } = useCart();
 
   return (
-    <div
-      className={`fixed inset-0 z-40 transform transition-opacity duration-300 ${
-        isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
-      }`}
-    >
+    <>
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/20" onClick={closeCart} aria-hidden="true" />
+      <button
+        type="button"
+        aria-label="Close cart"
+        onClick={closeCart}
+        className={`fixed inset-0 z-40 bg-black/20 transition-opacity ${
+          isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+      />
 
-      {/* Panel */}
+      {/* Drawer */}
       <aside
-        className={`absolute right-0 top-0 h-full w-full max-w-md bg-[#f6eee6] shadow-2xl transition-transform duration-300 ${
+        className={`fixed right-0 top-0 z-50 h-full w-[92vw] max-w-md bg-[#FFF9F3] text-[#4A3C30] shadow-xl transition-transform duration-300 ease-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Shopping bag"
       >
-        {/* Header row */}
-        <div className="flex items-center justify-between px-6 py-4">
-          <button
-            type="button"
-            onClick={closeCart}
-            className="text-xs tracking-[0.2em] uppercase text-text"
-          >
-            x
-          </button>
-          <span className="text-xs tracking-[0.2em] uppercase text-text/70">bag</span>
-        </div>
-
-        {/* Items */}
-        <div className="px-6 py-4 space-y-4 text-xs tracking-[0.2em]">
-          {items.length === 0 ? (
-            <p className="text-text/60">your bag is empty</p>
-          ) : (
-            items.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center justify-between gap-3 border-b border-text/10 pb-3"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="relative h-12 w-12 overflow-hidden bg-background/60">
-                    <Image src={item.image} alt={item.title} fill className="object-cover" />
-                  </div>
-                  <div>
-                    <p className="text-[0.7rem] uppercase tracking-[0.2em] text-text">
-                      {item.quantity} {item.title}
-                    </p>
-                    <p className="text-[0.7rem] text-text/60">{item.price} EUR</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-end gap-1">
-                  <p className="text-[0.7rem] text-text">
-                    {(item.price * item.quantity).toFixed(0)} EUR
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => removeFromCart(item.id)}
-                    className="text-[0.6rem] uppercase tracking-[0.2em] text-text/50"
-                  >
-                    remove
-                  </button>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* Footer / total + button */}
-        {items.length > 0 && (
-          <div className="mt-auto px-6 pb-8 pt-4">
-            <div className="mb-4 flex items-center justify-between text-[0.7rem] uppercase tracking-[0.2em] text-text/80">
-              <span>total</span>
-              <span>{total.toFixed(0)} EUR</span>
+        <div className="flex h-full flex-col">
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 py-4">
+            <div className="text-[0.85rem] tracking-[0.18em]">
+              bag {itemCount > 0 ? `(${itemCount})` : ''}
             </div>
 
-            <Link
-              href="/checkout"
+            <button
+              type="button"
               onClick={closeCart}
-              className="block w-full bg-[#5f4a3b] py-3 text-center text-[0.7rem] uppercase tracking-[0.25em] text-[#f6eee6] transition-colors hover:bg-[#4f3e32]"
+              className="text-[0.8rem] tracking-[0.18em] opacity-70 hover:opacity-100"
             >
-              proceed to checkout
-            </Link>
+              close
+            </button>
           </div>
-        )}
+
+          <div className="h-px bg-[#4A3C30]/10" />
+
+          {/* Items */}
+          <div className="flex-1 overflow-y-auto px-5 py-5">
+            {items.length === 0 ? (
+              <div className="space-y-3 text-sm opacity-70">
+                <p>Your bag is empty.</p>
+                <Link
+                  href="/shop"
+                  onClick={closeCart}
+                  className="inline-block text-xs tracking-[0.18em] underline underline-offset-4"
+                >
+                  browse shop →
+                </Link>
+              </div>
+            ) : (
+              <ul className="space-y-5">
+                {items.map((item) => (
+                  <li key={item.id} className="flex gap-4">
+                    <div className="relative h-24 w-20 overflow-hidden bg-white/40">
+                      <Image src={item.image} alt={item.title} fill className="object-cover" />
+                    </div>
+
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="truncate text-[0.8rem] tracking-[0.14em] lowercase">
+                            {item.title}
+                          </p>
+                          <p className="mt-1 text-[0.7rem] tracking-[0.14em] opacity-60">
+                            qty {item.quantity}
+                          </p>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => removeFromCart(item.id)}
+                          className="text-[0.7rem] tracking-[0.14em] opacity-60 hover:opacity-100"
+                        >
+                          remove
+                        </button>
+                      </div>
+
+                      <div className="mt-2 flex items-baseline justify-between text-[0.75rem] tracking-[0.14em] opacity-80">
+                        <span>price</span>
+                        <span>
+                          {item.price ? `${item.price.toLocaleString('no-NO')} EUR` : 'on request'}
+                        </span>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Footer */}
+          {items.length > 0 && (
+            <>
+              <div className="h-px bg-[#4A3C30]/10" />
+              <div className="px-5 py-5 space-y-4">
+                <div className="flex items-baseline justify-between text-[0.8rem] tracking-[0.18em]">
+                  <span>total</span>
+                  <span>{total ? `${total.toLocaleString('no-NO')} EUR` : '—'}</span>
+                </div>
+
+                <button
+                  type="button"
+                  className="w-full bg-[#5f4a3b] py-3 text-center text-[0.7rem] tracking-[0.25em] text-[#FFF9F3] transition-colors hover:bg-[#4f3e32]"
+                >
+                  checkout
+                </button>
+
+                <button
+                  type="button"
+                  onClick={clearCart}
+                  className="w-full py-2 text-[0.7rem] tracking-[0.18em] opacity-60 hover:opacity-100"
+                >
+                  clear bag
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </aside>
-    </div>
+    </>
   );
 }

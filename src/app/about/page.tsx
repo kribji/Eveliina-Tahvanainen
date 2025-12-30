@@ -1,10 +1,21 @@
 // src/app/about/page.tsx
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function AboutPage() {
   return (
     <>
       <div className="mx-auto max-w-5xl px-4 py-16 space-y-10">
+        {/* Back */}
+        <div className="mb-2">
+          <Link
+            href="/"
+            className="text-xs tracking-body text-text/60 underline-offset-4 hover:underline"
+          >
+            ←
+          </Link>
+        </div>
+
         {/* Top text block */}
         <section className="space-y-6 text-sm leading-relaxed md:text-base">
           <p>
