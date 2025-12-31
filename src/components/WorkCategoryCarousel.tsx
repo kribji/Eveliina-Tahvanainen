@@ -38,7 +38,7 @@ export default function WorkCategoryCarousel() {
     [],
   );
 
-  // 3 copies so we can “wrap” back to the middle seamlessly
+  // looped for desktop carousel
   const loopedCategories = useMemo(
     () => [...baseCategories, ...baseCategories, ...baseCategories],
     [baseCategories],
@@ -48,10 +48,8 @@ export default function WorkCategoryCarousel() {
     const el = scrollerRef.current;
     if (!el) return;
 
-    // Since we render 3 copies, 1/3 of scrollWidth ≈ one “loop”
     const loopWidth = el.scrollWidth / 3;
     loopWidthRef.current = loopWidth;
-
     setScrollable(el.scrollWidth > el.clientWidth + 2);
   };
 
@@ -62,8 +60,6 @@ export default function WorkCategoryCarousel() {
     const loopWidth = loopWidthRef.current;
     if (!loopWidth) return;
 
-    // We want to keep the user around the middle copy.
-    // If they drift too far left/right, jump by one loopWidth.
     const leftBoundary = loopWidth * 0.5;
     const rightBoundary = loopWidth * 1.5;
 
@@ -86,7 +82,6 @@ export default function WorkCategoryCarousel() {
     if (!scrollable) return;
 
     const nextDir: -1 | 1 = direction === 'right' ? 1 : -1;
-
     if (dirRef.current === nextDir && rafRef.current) return;
 
     dirRef.current = nextDir;
@@ -106,8 +101,6 @@ export default function WorkCategoryCarousel() {
       lastTsRef.current = ts;
 
       node.scrollLeft += dirRef.current * SCROLL_SPEED * dt;
-
-      // keep it endless
       wrapIfNeeded();
 
       rafRef.current = requestAnimationFrame(tick);
@@ -122,7 +115,6 @@ export default function WorkCategoryCarousel() {
     const el = scrollerRef.current;
     if (!el) return;
 
-    // Ensure we start on the middle copy
     requestAnimationFrame(() => {
       recompute();
       const loopWidth = loopWidthRef.current;
@@ -136,7 +128,6 @@ export default function WorkCategoryCarousel() {
     };
 
     const ro = new ResizeObserver(() => recompute());
-
     window.addEventListener('resize', onResize);
     ro.observe(el);
 
@@ -145,15 +136,39 @@ export default function WorkCategoryCarousel() {
       window.removeEventListener('resize', onResize);
       ro.disconnect();
     };
-  }, [scrollable]);
+  }, []);
 
   return (
     <section className="bg-[#FFF9F3] py-10 text-[#4A3C30]">
-      <div className="relative w-full">
-        {/* LEFT ARROW (hover-to-scroll trigger) */}
+      {/* MOBILE: stacked editorial tiles */}
+      <div className="md:hidden">
+        {baseCategories.map((category) => (
+          <Link key={category.slug} href={`/work/${category.slug}`} className="block">
+            <figure className="relative h-[70vh] min-h-[520px] w-full overflow-hidden bg-[#FFF9F3]">
+              <Image
+                src={category.image}
+                alt={category.title}
+                fill
+                className="object-cover"
+                sizes="100vw"
+              />
+
+              {/* Always-on label for touch */}
+              <div className="pointer-events-none absolute inset-x-0 bottom-6 flex justify-center">
+                <span className=" bg-white/80 px-5 py-2 text-[0.85rem] lowercase tracking-[0.14em] text-[#4A3C30] backdrop-blur-[2px] md:text-[0.95rem]">
+                  {category.title}
+                </span>
+              </div>
+            </figure>
+          </Link>
+        ))}
+      </div>
+
+      {/* DESKTOP: endless carousel */}
+      <div className="relative hidden md:block">
         {scrollable && (
           <div
-            className="absolute inset-y-0 left-0 z-20 hidden w-16 md:block"
+            className="absolute inset-y-0 left-0 z-20 w-16"
             onMouseEnter={() => startScroll('left')}
             onMouseLeave={stopScroll}
           >
@@ -163,10 +178,9 @@ export default function WorkCategoryCarousel() {
           </div>
         )}
 
-        {/* RIGHT ARROW (hover-to-scroll trigger) */}
         {scrollable && (
           <div
-            className="absolute inset-y-0 right-0 z-20 hidden w-16 md:block"
+            className="absolute inset-y-0 right-0 z-20 w-16"
             onMouseEnter={() => startScroll('right')}
             onMouseLeave={stopScroll}
           >
@@ -182,10 +196,7 @@ export default function WorkCategoryCarousel() {
             wrapIfNeeded();
             recompute();
           }}
-          className="
-            flex gap-0 overflow-x-auto
-            [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
-          "
+          className="flex gap-0 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {loopedCategories.map((category, index) => (
             <Link
@@ -194,13 +205,7 @@ export default function WorkCategoryCarousel() {
               className="group relative block shrink-0"
               onMouseLeave={stopScroll}
             >
-              <figure
-                className="
-                  relative overflow-hidden bg-[#FFF9F3]
-                  h-[94vh] min-h-[680px] max-h-[1060px]
-                  w-[70vw] md:w-[50vw] lg:w-[44vw]
-                "
-              >
+              <figure className="relative h-[94vh] min-h-[680px] max-h-[1060px] w-[70vw] md:w-[50vw] lg:w-[44vw] overflow-hidden bg-[#FFF9F3]">
                 <Image
                   src={category.image}
                   alt={category.title}
@@ -209,10 +214,8 @@ export default function WorkCategoryCarousel() {
                   sizes="(min-width: 1024px) 44vw, (min-width: 768px) 50vw, 70vw"
                 />
 
-                {/* subtle sheer (kept). You can delete if you want totally raw images */}
                 <div className="absolute inset-0 bg-white/10" aria-hidden="true" />
 
-                {/* hover overlay label */}
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white/0 opacity-0 transition-all duration-700 ease-out group-hover:bg-white/45 group-hover:opacity-100">
                   <span className="text-3xl lowercase tracking-[0.14em] md:text-4xl">
                     {category.title}

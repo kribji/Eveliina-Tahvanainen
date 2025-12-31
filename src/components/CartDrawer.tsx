@@ -110,12 +110,13 @@ export default function CartDrawer() {
                   <span>{total ? `${total.toLocaleString('no-NO')} EUR` : '—'}</span>
                 </div>
 
-                <button
-                  type="button"
-                  className="w-full bg-[#5f4a3b] py-3 text-center text-[0.7rem] tracking-[0.25em] text-[#FFF9F3] transition-colors hover:bg-[#4f3e32]"
+                <Link
+                  href="/checkout"
+                  onClick={closeCart}
+                  className="block w-full bg-[#5f4a3b] py-3 text-center text-[0.7rem] tracking-[0.25em] text-[#FFF9F3] transition-colors hover:bg-[#4f3e32]"
                 >
                   checkout
-                </button>
+                </Link>
 
                 <button
                   type="button"
