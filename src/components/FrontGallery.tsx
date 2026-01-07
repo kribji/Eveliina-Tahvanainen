@@ -25,8 +25,8 @@ function RevealItem({ children, className = '', parallaxFactor = 0.02 }: RevealI
 
     // if IO isn't available for some reason, show immediately
     if (!('IntersectionObserver' in globalThis)) {
-      const raf = globalThis.requestAnimationFrame(() => setInView(true));
-      return () => globalThis.cancelAnimationFrame(raf);
+      const raf = setTimeout(() => setInView(true), 0);
+      return () => clearTimeout(raf);
     }
 
     const observer = new IntersectionObserver(
