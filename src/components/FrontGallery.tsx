@@ -111,9 +111,9 @@ export default function FrontGallery() {
                       ) : null}
                     </div>
 
-                    {work.description ? (
+                    {work.caption || work.description ? (
                       <p className="mt-1 line-clamp-2 text-[0.75rem] text-[#4A3C30]/70">
-                        {work.description}
+                        {work.caption ?? work.description}
                       </p>
                     ) : null}
                   </div>

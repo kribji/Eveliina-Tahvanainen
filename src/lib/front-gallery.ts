@@ -15,11 +15,11 @@ export type FrontWork = {
 
 export const frontWorks: FrontWork[] = [
   {
-    src: '/something.jpg',
-    alt: '…',
-    title: 'Volcanic Home', // optional
-    caption: 'Foam glass, 2023', // optional
-    width: 'w-[...]',
+    src: '/01.jpeg',
+    alt: 'Volcanic Home',
+    title: 'Volcanic Home',
+    caption: 'Foam glass, 2023',
+    width: 'w-[min(520px,92vw)]',
     align: 'right',
     href: '/exhibition',
   },
