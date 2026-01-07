@@ -3,4 +3,5 @@
 
 body {
   @apply bg-background text-text tracking-body;
+  font-weight: 300;
 }

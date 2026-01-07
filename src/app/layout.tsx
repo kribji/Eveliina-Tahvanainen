@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react';
-import { Roboto_Condensed } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
 
 import { RootClientLayout } from '@/components/RootClientLayout';
 
-const robotoCondensed = Roboto_Condensed({
+const inter = Inter({
   subsets: ['latin'],
   weight: ['300', '400', '700'],
+  display: 'swap',
 });
 
 export const metadata = {
@@ -17,8 +18,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className={robotoCondensed.className}>
-        {/* Wrap everything in the client-side cart provider, header, drawer, footer */}
+      <body className={inter.className}>
         <RootClientLayout>
           <main>{children}</main>
         </RootClientLayout>

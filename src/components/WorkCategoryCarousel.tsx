@@ -144,7 +144,7 @@ export default function WorkCategoryCarousel() {
       <div className="md:hidden">
         {baseCategories.map((category) => (
           <Link key={category.slug} href={`/work/${category.slug}`} className="block">
-            <figure className="relative h-[70vh] min-h-[520px] w-full overflow-hidden bg-[#FFF9F3]">
+            <figure className="font-bold relative h-[70vh] min-h-[520px] w-full overflow-hidden bg-[#FFF9F3]">
               <Image
                 src={category.image}
                 alt={category.title}

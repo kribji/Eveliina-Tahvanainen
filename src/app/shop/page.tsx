@@ -7,14 +7,14 @@ import { shopCategories } from '@/lib/shop-categories';
 export default function ShopPage() {
   return (
     <main className="bg-[#FFF9F3] text-[#4A3C30]">
-      <section className="flex flex-col">
+      <section className="flex flex-col gap-12 md:gap-16 lg:gap-20">
         {shopCategories.map((category) => (
           <Link key={category.key} href={category.href} className="group block">
             <figure
               className="
                 relative mx-auto overflow-hidden
                 w-[96vw] sm:w-[90vw] md:w-[78vw] lg:w-[68vw] xl:w-[62vw]
-                h-[78vh] min-h-[560px] max-h-[900px]
+                h-[78vh] min-h-[560px] max-h-[900px]font-bold
               "
             >
               <Image

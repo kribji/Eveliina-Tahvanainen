@@ -6,16 +6,8 @@ import Link from 'next/link';
 import { getProductsByCategory, products } from '@/lib/products';
 
 export default function CategoryPage() {
-  // Read params from the URL on the client
   const params = useParams<{ category?: string }>();
   const category = params?.category ?? '';
-
-  console.log('useParams() =>', params);
-  console.log('category from params:', category);
-  console.log(
-    'all product categories:',
-    products.map((p) => p.category),
-  );
 
   const items = category ? getProductsByCategory(category) : [];
 
@@ -41,15 +33,16 @@ export default function CategoryPage() {
       <div className="mb-8">
         <Link
           href="/shop"
-          className="text-xs tracking-body text-text/60 underline-offset-4 hover:underline"
+          className="text-xs tracking-[0.18em] text-text/60 underline-offset-4 hover:underline"
         >
           ←
         </Link>
       </div>
+
       <section className="grid gap-8 md:grid-cols-3">
         {items.map((product) => (
           <Link key={product.id} href={`/work/${category}/${product.slug}`} className="group block">
-            <div className="relative aspect-[3/4] w-full overflow-hidden">
+            <div className="relative aspect-[3/4] w-full overflow-hidden bg-background/60">
               <Image
                 src={product.image}
                 alt={product.title}
@@ -57,11 +50,24 @@ export default function CategoryPage() {
                 className="object-cover transition-opacity duration-500 group-hover:opacity-0"
               />
               <Image
-                src={product.hoverImage}
+                src={product.hoverImage || product.image}
                 alt={product.title}
                 fill
                 className="absolute inset-0 object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
               />
+            </div>
+
+            {/* info row */}
+            <div className="mt-3 flex items-baseline justify-between gap-4">
+              <p className="min-w-0 truncate text-[0.75rem] tracking-[0.16em] text-text/75 lowercase">
+                {product.title}
+              </p>
+
+              <p className="shrink-0 text-[0.75rem] tracking-[0.16em] text-text/60">
+                {typeof product.price === 'number'
+                  ? `${product.price.toLocaleString('no-NO')} EUR`
+                  : 'on request'}
+              </p>
             </div>
           </Link>
         ))}

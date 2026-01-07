@@ -83,6 +83,26 @@ export default function FrontGallery() {
               <div className="relative w-full overflow-hidden">
                 <div className="relative aspect-[4/5] w-full">
                   <Image src={work.src} alt={work.alt} fill className="object-cover" />
+                  {/* CAPTION BAND */}
+                  <div className="absolute inset-x-0 bottom-0 bg-[#FFF9F3]/95 px-3 py-2 backdrop-blur-[2px]">
+                    <div className="flex items-baseline justify-between gap-4">
+                      <p className="truncate text-[0.7rem] tracking-[0.18em] text-[#4A3C30] lowercase">
+                        {work.title ?? work.alt}
+                      </p>
+
+                      {work.year && (
+                        <p className="shrink-0 text-[0.7rem] tracking-[0.18em] text-[#4A3C30]/70">
+                          {work.year}
+                        </p>
+                      )}
+                    </div>
+
+                    {work.description && (
+                      <p className="mt-1 line-clamp-2 text-[0.75rem] text-[#4A3C30]/70">
+                        {work.description}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             </Link>
