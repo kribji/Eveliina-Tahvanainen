@@ -20,38 +20,47 @@ function RevealItem({ children, className = '', parallaxFactor = 0.02 }: RevealI
     const node = ref.current;
     if (!node) return;
 
+    // fallback: never allow “stuck invisible”
+    const fallback = window.setTimeout(() => setInView(true), 500);
+
+    // if IO isn't available for some reason, show immediately
+    if (!('IntersectionObserver' in window)) {
+      const raf = window.requestAnimationFrame(() => setInView(true));
+      return () => window.cancelAnimationFrame(raf);
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setInView(true);
-            observer.unobserve(entry.target);
-          }
-        });
+        const entry = entries[0];
+        if (entry?.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
       },
-      { threshold: 0.2 },
+      { threshold: 0.15 },
     );
 
     observer.observe(node);
 
     const handleScroll = () => setScrollY(window.scrollY);
-
     window.addEventListener('scroll', handleScroll, { passive: true });
+
     return () => {
+      window.clearTimeout(fallback);
       window.removeEventListener('scroll', handleScroll);
       observer.disconnect();
     };
   }, []);
 
-  const offset = inView ? scrollY * parallaxFactor : 40;
+  const offset = inView ? scrollY * parallaxFactor : 24;
 
   return (
     <div
       ref={ref}
       style={{ transform: `translateY(${offset}px)` }}
-      className={`transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-        inView ? 'opacity-100 blur-0' : 'opacity-0 blur-[2px]'
-      } ${className}`}
+      className={`transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]
+        ${inView ? 'opacity-100 blur-0' : 'opacity-0 blur-[2px]'}
+        ${className}`}
     >
       {children}
     </div>
