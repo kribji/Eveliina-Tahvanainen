@@ -21,6 +21,7 @@ export const frontWorks = [
     width: 'w-[min(520px,92vw)]',
     align: 'right',
     href: '/exhibition/volcanic-home',
+    year: '2023',
   },
   {
     src: '/02.jpeg',
@@ -29,6 +30,8 @@ export const frontWorks = [
     caption: 'Stoneware, 2023',
     width: 'w-[min(440px,92vw)]',
     align: 'left',
+    href: '/exhibition/volcanic-home',
+    year: '2023',
   },
   {
     src: '/03.jpeg',
@@ -37,6 +40,8 @@ export const frontWorks = [
     caption: 'Stoneware, 2023',
     width: 'w-[min(480px,92vw)]',
     align: 'right',
+    href: '/exhibition/volcanic-home',
+    year: '2023',
   },
   {
     src: '/04.jpeg',
@@ -45,6 +50,8 @@ export const frontWorks = [
     caption: 'Clay, 2024',
     width: 'w-[min(400px,92vw)]',
     align: 'left',
+    href: '/exhibition/volcanic-home',
+    year: '2023',
   },
   {
     src: '/05.jpeg',
@@ -53,6 +60,8 @@ export const frontWorks = [
     caption: 'Clay, 2024',
     width: 'w-[min(400px,92vw)]',
     align: 'left',
+    href: '/exhibition/volcanic-home',
+    year: '2023',
   },
   {
     src: '/06.jpeg',
@@ -61,6 +70,8 @@ export const frontWorks = [
     caption: 'Clay, 2024',
     width: 'w-[min(400px,92vw)]',
     align: 'left',
+    href: '/exhibition/volcanic-home',
+    year: '2023',
   },
   {
     src: '/07.jpeg',
@@ -69,6 +80,8 @@ export const frontWorks = [
     caption: 'Clay, 2024',
     width: 'w-[min(400px,92vw)]',
     align: 'left',
+    href: '/exhibition/volcanic-home',
+    year: '2023',
   },
   {
     src: '/08.jpeg',
@@ -77,5 +90,7 @@ export const frontWorks = [
     caption: 'Clay, 2024',
     width: 'w-[min(400px,92vw)]',
     align: 'left',
+    href: '/exhibition/volcanic-home',
+    year: '2023',
   },
 ];
