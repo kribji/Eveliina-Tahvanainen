@@ -24,9 +24,9 @@ function RevealItem({ children, className = '', parallaxFactor = 0.02 }: RevealI
     const fallback = window.setTimeout(() => setInView(true), 500);
 
     // if IO isn't available for some reason, show immediately
-    if (!('IntersectionObserver' in window)) {
-      const raf = window.requestAnimationFrame(() => setInView(true));
-      return () => window.cancelAnimationFrame(raf);
+    if (!('IntersectionObserver' in globalThis)) {
+      const raf = globalThis.requestAnimationFrame(() => setInView(true));
+      return () => globalThis.cancelAnimationFrame(raf);
     }
 
     const observer = new IntersectionObserver(
