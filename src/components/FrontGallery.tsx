@@ -34,14 +34,12 @@ function RevealItem({ children, className = '', parallaxFactor = 0.02 }: RevealI
 
     observer.observe(node);
 
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
+    const handleScroll = () => setScrollY(window.scrollY);
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      if (node) observer.unobserve(node);
+      observer.disconnect();
     };
   }, []);
 
@@ -62,17 +60,17 @@ function RevealItem({ children, className = '', parallaxFactor = 0.02 }: RevealI
 
 export default function FrontGallery() {
   return (
-    <section className="from-background py-16 pb-32 md:pb-48">
+    <section className="py-16 pb-32 md:pb-48">
       <div className="mx-auto flex max-w-5xl flex-col gap-10 px-4">
         {frontWorks.map((work, index) => (
           <RevealItem
-            key={work.src + index}
+            key={`${work.src}-${index}`}
             className={`relative ${work.width} ${work.align === 'right' ? 'ml-auto' : ''}`}
             parallaxFactor={0.01 + index * 0.002}
           >
             <Link
-              href={work.href ?? '/exhibition'} // default to /work if no href
-              className="group relative block w-full overflow-visible cursor-pointer"
+              href={work.href ?? '/exhibition'}
+              className="group relative block w-full cursor-pointer overflow-visible"
             >
               {/* Soft depth shadow */}
               <div
@@ -82,26 +80,33 @@ export default function FrontGallery() {
 
               <div className="relative w-full overflow-hidden">
                 <div className="relative aspect-[4/5] w-full">
-                  <Image src={work.src} alt={work.alt} fill className="object-cover" />
+                  <Image
+                    src={work.src}
+                    alt={work.alt}
+                    fill
+                    className="object-cover"
+                    sizes="(min-width: 768px) 800px, 92vw"
+                  />
+
                   {/* CAPTION BAND */}
-                  <div className="absolute inset-x-0 bottom-0 bg-[#FFF9F3]/95 px-3 py-2 backdrop-blur-[2px]">
+                  <div className="absolute inset-x-0 bottom-0 bg-[#FFF9F3]/90 px-3 py-2 backdrop-blur-[2px]">
                     <div className="flex items-baseline justify-between gap-4">
-                      <p className="truncate text-[0.7rem] tracking-[0.18em] text-[#4A3C30] lowercase">
+                      <p className="min-w-0 truncate text-[0.7rem] tracking-[0.18em] text-[#4A3C30] lowercase">
                         {work.title ?? work.alt}
                       </p>
 
-                      {work.year && (
+                      {work.year ? (
                         <p className="shrink-0 text-[0.7rem] tracking-[0.18em] text-[#4A3C30]/70">
                           {work.year}
                         </p>
-                      )}
+                      ) : null}
                     </div>
 
-                    {work.description && (
+                    {work.description ? (
                       <p className="mt-1 line-clamp-2 text-[0.75rem] text-[#4A3C30]/70">
                         {work.description}
                       </p>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </div>
