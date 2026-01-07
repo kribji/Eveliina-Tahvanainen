@@ -13,14 +13,11 @@ export type FrontWork = {
   description?: string;
 };
 
-export const frontWorks: FrontWork[] = [
-  {
-    src: '/01.jpeg',
-    alt: 'Volcanic Home',
-    title: 'Volcanic Home',
-    caption: 'Foam glass, 2023',
-    width: 'w-[min(520px,92vw)]',
-    align: 'right',
-    href: '/exhibition',
-  },
-];
+export const frontWorks = Array.from({ length: 8 }, (_, i) => ({
+  src: `/${String(i + 1).padStart(2, '0')}.jpeg`,
+  alt: `Work ${i + 1}`,
+  title: `Work ${i + 1}`,
+  caption: 'Ceramic work',
+  width: 'w-[min(520px,92vw)]',
+  align: i % 2 === 0 ? 'right' : 'left',
+}));
