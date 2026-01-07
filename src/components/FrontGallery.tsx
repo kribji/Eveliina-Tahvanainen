@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { frontWorks } from '@/lib/front-gallery';
+import { frontWorks, type FrontWork } from '@/lib/front-gallery';
 
 type RevealItemProps = {
   children: React.ReactNode;
@@ -71,7 +71,7 @@ export default function FrontGallery() {
   return (
     <section className="py-16 pb-32 md:pb-48">
       <div className="mx-auto flex max-w-5xl flex-col gap-10 px-4">
-        {frontWorks.map((work, index) => (
+        {frontWorks.map((work: FrontWork, index) => (
           <RevealItem
             key={`${work.src}-${index}`}
             className={`relative ${work.width} ${work.align === 'right' ? 'ml-auto' : ''}`}

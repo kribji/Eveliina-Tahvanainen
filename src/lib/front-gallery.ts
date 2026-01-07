@@ -93,4 +93,4 @@ export const frontWorks = [
     href: '/exhibition/volcanic-home',
     year: '2023',
   },
-];
+] satisfies FrontWork[];
