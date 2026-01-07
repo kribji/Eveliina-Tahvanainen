@@ -6,7 +6,6 @@ export type FrontWork = {
   href?: string;
   width: string;
   align?: 'left' | 'right';
-
   title?: string;
   year?: string;
   caption?: string;
