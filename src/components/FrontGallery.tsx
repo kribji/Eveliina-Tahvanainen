@@ -8,57 +8,47 @@ import { frontWorks, type FrontWork } from '@/lib/front-gallery';
 type RevealItemProps = {
   children: React.ReactNode;
   className?: string;
-  parallaxFactor?: number;
+  index?: number;
 };
 
-function RevealItem({ children, className = '', parallaxFactor = 0.02 }: RevealItemProps) {
+function RevealItem({ children, className = '', index = 0 }: RevealItemProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [inView, setInView] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
 
-    // fallback: never allow “stuck invisible”
-    const fallback = window.setTimeout(() => setInView(true), 500);
-
-    // if IO isn't available for some reason, show immediately
+    // If IO isn't available, show immediately (rare)
     if (!('IntersectionObserver' in globalThis)) {
-      const raf = setTimeout(() => setInView(true), 0);
-      return () => clearTimeout(raf);
+      const id = window.setTimeout(() => setInView(true), 0);
+      return () => window.clearTimeout(id);
     }
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
+      ([entry]) => {
         if (entry?.isIntersecting) {
-          setInView(true);
+          // small stagger so items reveal one-by-one
+          window.setTimeout(() => setInView(true), index * 90);
           observer.disconnect();
         }
       },
-      { threshold: 0.15 },
+      {
+        threshold: 0.15,
+        // reveal a bit before the item is fully in view (tune if needed)
+        rootMargin: '0px 0px -10% 0px',
+      },
     );
 
     observer.observe(node);
-
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => {
-      window.clearTimeout(fallback);
-      window.removeEventListener('scroll', handleScroll);
-      observer.disconnect();
-    };
-  }, []);
-
-  const offset = inView ? scrollY * parallaxFactor : 24;
+    return () => observer.disconnect();
+  }, [index]);
 
   return (
     <div
       ref={ref}
-      style={{ transform: `translateY(${offset}px)` }}
-      className={`transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]
+      style={{ transform: `translate3d(0, ${inView ? 0 : 18}px, 0)` }}
+      className={`will-change-transform transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]
         ${inView ? 'opacity-100 blur-0' : 'opacity-0 blur-[2px]'}
         ${className}`}
     >
@@ -74,8 +64,8 @@ export default function FrontGallery() {
         {frontWorks.map((work: FrontWork, index) => (
           <RevealItem
             key={`${work.src}-${index}`}
+            index={index}
             className={`relative ${work.width} ${work.align === 'right' ? 'ml-auto' : ''}`}
-            parallaxFactor={0.01 + index * 0.002}
           >
             <Link
               href={work.href ?? '/exhibition'}
