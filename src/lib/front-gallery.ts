@@ -18,7 +18,7 @@ export const frontWorks = [
     alt: 'Volcanic Home',
     title: 'Volcanic Home',
     caption: 'Foam glass, 2023',
-    width: 'w-[min(520px,92vw)]',
+    width: 'w-[min(560px,92vw)]', // hero
     align: 'left',
     href: '/exhibition/volcanic-home',
     year: '2023',
@@ -28,7 +28,7 @@ export const frontWorks = [
     alt: 'Ceramic Study I',
     title: 'Ceramic Study I',
     caption: 'Stoneware, 2023',
-    width: 'w-[min(440px,92vw)]',
+    width: 'w-[min(420px,92vw)]', // smaller
     align: 'right',
     href: '/exhibition/volcanic-home',
     year: '2023',
@@ -38,7 +38,7 @@ export const frontWorks = [
     alt: 'Ceramic Study II',
     title: 'Ceramic Study II',
     caption: 'Stoneware, 2023',
-    width: 'w-[min(480px,92vw)]',
+    width: 'w-[min(500px,92vw)]', // large
     align: 'left',
     href: '/exhibition/volcanic-home',
     year: '2023',
@@ -48,49 +48,49 @@ export const frontWorks = [
     alt: 'Untitled',
     title: 'Untitled',
     caption: 'Clay, 2024',
-    width: 'w-[min(400px,92vw)]',
+    width: 'w-[min(380px,92vw)]', // small
     align: 'right',
     href: '/exhibition/volcanic-home',
-    year: '2023',
+    year: '2024',
   },
   {
     src: '/05.jpeg',
     alt: 'Untitled',
     title: 'Untitled',
     caption: 'Clay, 2024',
-    width: 'w-[min(400px,92vw)]',
+    width: 'w-[min(560px,92vw)]', // hero (brings back drama mid-page)
     align: 'left',
     href: '/exhibition/volcanic-home',
-    year: '2023',
+    year: '2024',
   },
   {
     src: '/06.jpeg',
     alt: 'Untitled',
     title: 'Untitled',
     caption: 'Clay, 2024',
-    width: 'w-[min(400px,92vw)]',
+    width: 'w-[min(440px,92vw)]', // medium
     align: 'right',
     href: '/exhibition/volcanic-home',
-    year: '2023',
+    year: '2024',
   },
   {
     src: '/07.jpeg',
     alt: 'Untitled',
     title: 'Untitled',
     caption: 'Clay, 2024',
-    width: 'w-[min(400px,92vw)]',
+    width: 'w-[min(400px,92vw)]', // small/medium
     align: 'left',
     href: '/exhibition/volcanic-home',
-    year: '2023',
+    year: '2024',
   },
   {
     src: '/08.jpeg',
     alt: 'Untitled',
     title: 'Untitled',
     caption: 'Clay, 2024',
-    width: 'w-[min(400px,92vw)]',
+    width: 'w-[min(500px,92vw)]', // large to end strong
     align: 'right',
     href: '/exhibition/volcanic-home',
-    year: '2023',
+    year: '2024',
   },
 ] satisfies FrontWork[];
