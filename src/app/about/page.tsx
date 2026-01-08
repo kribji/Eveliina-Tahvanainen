@@ -1,8 +1,6 @@
+// src/app/about/page.tsx
 import Image from 'next/image';
 import Link from 'next/link';
-
-import eveliinaImg from '@/public/eveliina.jpeg';
-import mainPieceImg from '@/public/main-piece.jpeg';
 
 export default function AboutPage() {
   return (
@@ -31,23 +29,22 @@ export default function AboutPage() {
       <section className="grid gap-4 md:grid-cols-2">
         <div className="relative aspect-[4/5] w-full overflow-hidden">
           <Image
-            src={eveliinaImg}
+            src="/eveliina.jpeg"
             alt="Eveliina holding a sculptural piece"
             fill
             className="object-cover"
             priority
-            placeholder="blur"
             sizes="(min-width: 768px) 50vw, 92vw"
+            quality={80}
           />
         </div>
 
         <div className="relative aspect-[4/5] w-full overflow-hidden">
           <Image
-            src={mainPieceImg}
+            src="/main-piece.jpeg"
             alt="Sculpture in a rocky landscape"
             fill
             className="object-cover"
-            placeholder="blur"
             sizes="(min-width: 768px) 50vw, 92vw"
             quality={80}
           />
