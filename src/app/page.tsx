@@ -2,6 +2,7 @@ import Hero from '@/components/Hero';
 import WorkCategoryCarousel from '@/components/WorkCategoryCarousel';
 import FrontIntro from '@/components/FrontIntro';
 import FrontLogo from '@/components/FrontLogo';
+import CTA from '@/components/CTA';
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <FrontIntro />
       <WorkCategoryCarousel />
       <FrontLogo />
+      <CTA />
     </div>
   );
 }
