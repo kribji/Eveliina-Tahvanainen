@@ -10,8 +10,8 @@ export default function Home() {
       <Hero />
       <FrontIntro />
       <WorkCategoryCarousel />
-      <FrontLogo />
       <CTA />
+      <FrontLogo />
     </div>
   );
 }
