@@ -1,4 +1,3 @@
-// tailwind.config.ts
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
@@ -6,16 +5,17 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/lib/**/*.{js,ts,jsx,tsx,mdx}', // ✅ ADD THIS
   ],
   theme: {
     extend: {
       colors: {
-        background: '#FFF9F3', // main background
-        text: '#4A3C30', // main text color
+        background: '#FFF9F3',
+        text: '#4A3C30',
       },
       letterSpacing: {
-        header: '0.3em', // 30%
-        body: '0.1em', // 10%
+        header: '0.3em',
+        body: '0.1em',
       },
       container: {
         center: true,
