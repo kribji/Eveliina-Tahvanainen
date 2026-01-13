@@ -1,14 +1,6 @@
 import type { ReactNode } from 'react';
-import { Inter } from 'next/font/google';
 import './globals.css';
-
 import { RootClientLayout } from '@/components/RootClientLayout';
-
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['300', '400', '700'],
-  display: 'swap',
-});
 
 export const metadata = {
   title: 'Eveliina Tahvanainen | Portfolio',
@@ -18,7 +10,10 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <head>
+        <link rel="stylesheet" href="https://use.typekit.net/nws8wix.css" />
+      </head>
+      <body>
         <RootClientLayout>
           <main>{children}</main>
         </RootClientLayout>

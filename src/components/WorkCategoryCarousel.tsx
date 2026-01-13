@@ -139,12 +139,12 @@ export default function WorkCategoryCarousel() {
   }, []);
 
   return (
-    <section className="bg-[#FFF9F3] py-10 text-[#4A3C30]">
+    <section className="bg-[#FFFFFF] py-10 text-[#4A3C30]">
       {/* MOBILE: stacked editorial tiles */}
       <div className="md:hidden">
         {baseCategories.map((category) => (
           <Link key={category.slug} href={`/work/${category.slug}`} className="block">
-            <figure className="font-bold relative h-[70vh] min-h-[520px] w-full overflow-hidden bg-[#FFF9F3]">
+            <figure className="font relative h-[70vh] min-h-[520px] w-full overflow-hidden bg-[#FFF9F3]">
               <Image
                 src={category.image}
                 alt={category.title}
@@ -205,7 +205,7 @@ export default function WorkCategoryCarousel() {
               className="group relative block shrink-0"
               onMouseLeave={stopScroll}
             >
-              <figure className="relative h-[94vh] min-h-[680px] max-h-[1060px] w-[70vw] md:w-[50vw] lg:w-[44vw] overflow-hidden bg-[#FFF9F3]">
+              <figure className="relative h-[94vh] min-h-[680px] max-h-[1060px] w-[70vw] md:w-[50vw] lg:w-[44vw] overflow-hidden bg-[#FFFFFF]">
                 <Image
                   src={category.image}
                   alt={category.title}

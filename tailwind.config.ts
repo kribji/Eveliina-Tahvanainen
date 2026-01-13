@@ -5,12 +5,15 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/lib/**/*.{js,ts,jsx,tsx,mdx}', // ✅ ADD THIS
+    './src/lib/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"Helvetica Neue LT Pro"', 'helvetica-lt-pro', 'system-ui', 'sans-serif'],
+      },
       colors: {
-        background: '#FFF9F3',
+        background: '#FFFFFF',
         text: '#4A3C30',
       },
       letterSpacing: {

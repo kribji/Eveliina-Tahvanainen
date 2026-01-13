@@ -21,7 +21,7 @@ export default function CartDrawer() {
 
       {/* Drawer */}
       <aside
-        className={`fixed right-0 top-0 z-50 h-full w-[92vw] max-w-md bg-[#FFF9F3] text-[#4A3C30] shadow-xl transition-transform duration-300 ease-out ${
+        className={`fixed right-0 top-0 z-50 h-full w-[92vw] max-w-md bg-[#FFFFFF] text-[#4A3C30] shadow-xl transition-transform duration-300 ease-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         role="dialog"

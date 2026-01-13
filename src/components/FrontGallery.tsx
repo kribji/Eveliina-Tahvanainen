@@ -67,18 +67,18 @@ export default function FrontGallery() {
             index={index}
             className={`relative ${work.width} ${work.align === 'right' ? 'ml-auto' : ''}`}
           >
-            <Link
-              href={work.href ?? '/exhibition'}
-              className="group relative block w-full cursor-pointer overflow-visible"
-            >
-              {/* Soft depth shadow */}
-              <div
-                className="pointer-events-none absolute inset-0 rounded-sm shadow-[0_20px_45px_rgba(0,0,0,0.25)] opacity-40 transition-opacity duration-500 ease-out group-hover:opacity-80"
-                aria-hidden="true"
-              />
+            <Link href={work.href ?? '/shop'} className="group block w-full cursor-pointer">
+              {/* IMAGE WRAP (shadow + clipping only here) */}
+              <div className="relative w-full">
+                {/* Soft depth shadow (only behind image) */}
+                <div
+                  className="pointer-events-none absolute inset-0 rounded-sm shadow-[0_24px_55px_rgba(0,0,0,0.3)]
+ opacity-30 transition-opacity duration-500 ease-out group-hover:opacity-70"
+                  aria-hidden="true"
+                />
 
-              <div className="relative w-full overflow-hidden">
-                <div className="relative aspect-[4/5] w-full">
+                {/* Clip only the image */}
+                <div className="relative aspect-[4/5] w-full overflow-hidden">
                   <Image
                     src={work.src}
                     alt={work.alt}
@@ -86,28 +86,28 @@ export default function FrontGallery() {
                     className="object-cover"
                     sizes="(min-width: 768px) 800px, 92vw"
                   />
-
-                  {/* CAPTION BAND */}
-                  <div className="absolute inset-x-0 bottom-0 bg-[#FFF9F3]/90 px-3 py-2 backdrop-blur-[2px]">
-                    <div className="flex items-baseline justify-between gap-4">
-                      <p className="min-w-0 truncate text-[0.7rem] tracking-[0.18em] text-[#4A3C30] lowercase">
-                        {work.title ?? work.alt}
-                      </p>
-
-                      {work.year ? (
-                        <p className="shrink-0 text-[0.7rem] tracking-[0.18em] text-[#4A3C30]/70">
-                          {work.year}
-                        </p>
-                      ) : null}
-                    </div>
-
-                    {work.caption || work.description ? (
-                      <p className="mt-1 line-clamp-2 text-[0.75rem] text-[#4A3C30]/70">
-                        {work.caption ?? work.description}
-                      </p>
-                    ) : null}
-                  </div>
                 </div>
+              </div>
+
+              {/* CAPTION (pure text under, no background, no frame) */}
+              <div className="mt-3 px-1">
+                <div className="flex items-baseline justify-between gap-4">
+                  <p className="min-w-0 truncate text-[0.7rem] tracking-[0.18em] text-[#4A3C30] lowercase">
+                    {work.title ?? work.alt}
+                  </p>
+
+                  {work.year ? (
+                    <p className="shrink-0 text-[0.7rem] tracking-[0.18em] text-[#4A3C30]/60">
+                      {work.year}
+                    </p>
+                  ) : null}
+                </div>
+
+                {work.caption || work.description ? (
+                  <p className="mt-1 line-clamp-2 text-[0.75rem] text-[#4A3C30]/70">
+                    {work.caption ?? work.description}
+                  </p>
+                ) : null}
               </div>
             </Link>
           </RevealItem>

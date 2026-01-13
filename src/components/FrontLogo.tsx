@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function FrontLogo() {
   return (
-    <section className="bg-[#FFF9F3] py-32 md:py-44">
+    <section className="bg-[#FFFFFF] py-32 md:py-44">
       <div className="flex justify-center">
         <Link href="/" aria-label="Home">
           <div

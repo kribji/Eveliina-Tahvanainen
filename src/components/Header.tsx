@@ -35,7 +35,7 @@ export default function Header() {
   return (
     <>
       <header className={`${showSticky ? 'fixed' : 'hidden'} inset-x-0 top-0 z-50`}>
-        <div className="bg-[#FFF9F3]">
+        <div className="bg-white/80 backdrop-blur-[2px]">
           <div className="px-3 py-1.5">
             {/* DESKTOP */}
             <div className="hidden h-14 items-center md:flex">
@@ -55,7 +55,7 @@ export default function Header() {
                 <nav className="flex items-center gap-10 text-[1.05rem] tracking-[0.14em]">
                   {[
                     { href: '/shop', label: 'shop' },
-                    { href: '/exhibition', label: 'exhibition' },
+                    { href: '/exhibition', label: 'gallery' },
                     { href: '/about', label: 'about' },
                   ].map((l) => (
                     <Link
@@ -79,7 +79,7 @@ export default function Header() {
                 <span className="relative inline-block">
                   bag
                   {itemCount > 0 && (
-                    <span className="absolute -right-3 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#4A3C30] px-1 text-[0.65rem] leading-none text-[#FFF9F3]">
+                    <span className="absolute -right-3 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#4A3C30] px-1 text-[0.65rem] leading-none text-[#FFFFFF]">
                       {itemCount}
                     </span>
                   )}
@@ -121,7 +121,7 @@ export default function Header() {
                 <span className="relative inline-block">
                   bag
                   {itemCount > 0 && (
-                    <span className="absolute -right-3 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#4A3C30] px-1 text-[0.65rem] leading-none text-[#FFF9F3]">
+                    <span className="absolute -right-3 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#4A3C30] px-1 text-[0.65rem] leading-none text-[#FFFFFF]">
                       {itemCount}
                     </span>
                   )}
@@ -143,7 +143,7 @@ export default function Header() {
       />
 
       <aside
-        className={`fixed left-0 top-0 z-50 h-full w-[86vw] max-w-sm bg-[#FFF9F3] text-[#4A3C30] shadow-xl transition-transform duration-300 ease-out md:hidden ${
+        className={`fixed left-0 top-0 z-50 h-full w-[86vw] max-w-sm bg-[#FFFFFF] text-[#4A3C30] shadow-xl transition-transform duration-300 ease-out md:hidden ${
           menuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         role="dialog"
@@ -177,7 +177,7 @@ export default function Header() {
               onClick={() => setMenuOpen(false)}
               className={isActive('/exhibition') ? 'text-[#4A3C30]' : 'text-[#4A3C30]/80'}
             >
-              exhibition
+              gallery
             </Link>
 
             <Link

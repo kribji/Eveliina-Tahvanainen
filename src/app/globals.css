@@ -2,6 +2,25 @@
 @config "../../tailwind.config.ts";
 
 body {
+  font-family:
+    'helvetica-neue-lt-pro',
+    'helvetica-lt-pro',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Arial,
+    sans-serif;
   @apply bg-background text-text tracking-body;
   font-weight: 300;
+}
+
+/* Typography utilities */
+@layer utilities {
+  .type-text {
+    @apply font-sans font-light tracking-body;
+  }
+
+  .type-category {
+    @apply font-sans font-bold tracking-header;
+  }
 }
