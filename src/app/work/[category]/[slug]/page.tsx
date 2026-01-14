@@ -94,7 +94,15 @@ export default function ProductPage() {
           <button
             type="button"
             onClick={() => addToCart(product, 1)}
-            className="w-full bg-[#5f4a3b] py-3 text-center text-[0.7rem] tracking-[0.25em] text-[#FFF9F3] transition-colors hover:bg-[#4f3e32]"
+            className="
+    w-full
+    bg-text text-background
+    py-3
+    text-center text-[0.7rem]
+    tracking-[0.25em]
+    transition-colors
+    hover:bg-text/80
+  "
           >
             add to cart
           </button>
