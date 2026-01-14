@@ -6,7 +6,7 @@ import { shopCategories } from '@/lib/shop-categories';
 
 export default function ShopPage() {
   return (
-    <main className="bg-[#FFF9F3] text-[#4A3C30]">
+    <main className="bg-[#FFFFF] text-[#4A3C30]">
       <section className="pt-20 md:pt-28 flex flex-col gap-12 md:gap-16 lg:gap-20">
         {shopCategories.map((category) => (
           <Link key={category.key} href={category.href} className="group block">

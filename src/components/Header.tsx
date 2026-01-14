@@ -43,7 +43,7 @@ export default function Header() {
                 <Link href="/" aria-label="Home" className="flex-shrink-0">
                   <div className="relative h-11 w-24">
                     <Image
-                      src="/logo-mark.png"
+                      src="/black-logo.png"
                       alt="Eveliina mark"
                       fill
                       className="object-contain"

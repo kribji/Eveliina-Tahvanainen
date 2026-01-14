@@ -17,7 +17,7 @@ export default function FrontLogo() {
             "
           >
             <Image
-              src="/logo-mark.png"
+              src="/black-logo.png"
               alt="Eveliina Tahvanainen"
               fill
               className="object-contain"
