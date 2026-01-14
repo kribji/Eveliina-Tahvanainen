@@ -149,7 +149,7 @@ export default function CheckoutPage() {
               )}
             </div>
 
-            <div className="h-px bg-[#4A3C30]/10" />
+            <div className="h-px bg-[#000000]/10" />
 
             {isEmpty ? (
               <div className="space-y-3 text-sm opacity-70">
