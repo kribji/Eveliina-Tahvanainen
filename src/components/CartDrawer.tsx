@@ -21,7 +21,7 @@ export default function CartDrawer() {
 
       {/* Drawer */}
       <aside
-        className={`fixed right-0 top-0 z-50 h-full w-[92vw] max-w-md bg-[#FFFFFF] text-[#4A3C30] shadow-xl transition-transform duration-300 ease-out ${
+        className={`fixed right-0 top-0 z-50 h-full w-[92vw] max-w-md bg-[#FFFFFF] text-text shadow-xl transition-transform duration-300 ease-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         role="dialog"
@@ -113,7 +113,7 @@ export default function CartDrawer() {
                 <Link
                   href="/checkout"
                   onClick={closeCart}
-                  className="block w-full bg-[#5f4a3b] py-3 text-center text-[0.7rem] tracking-[0.25em] text-[#FFF9F3] transition-colors hover:bg-[#4f3e32]"
+                  className="block w-full bg-[#5f4a3b] py-3 text-center text-[0.7rem] tracking-[0.25em] text-[#FFFFFF] transition-colors hover:bg-[#4f3e32]"
                 >
                   checkout
                 </Link>

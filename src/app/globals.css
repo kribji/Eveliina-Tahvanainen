@@ -1,26 +1,29 @@
 @import 'tailwindcss';
 @config "../../tailwind.config.ts";
 
+/* Define your design tokens (Tailwind v4) */
+@theme {
+  --color-background: #ffffff;
+  --color-text: #000000;
+
+  --tracking-header: 0.3em;
+  --tracking-body: 0.1em;
+
+  --font-sans:
+    helvetica-neue-lt-pro, helvetica-lt-pro, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+}
+
 body {
-  font-family:
-    'helvetica-neue-lt-pro',
-    'helvetica-lt-pro',
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Arial,
-    sans-serif;
-  @apply bg-background text-text tracking-body;
+  @apply bg-background text-text tracking-body font-sans;
   font-weight: 300;
 }
 
-/* Typography utilities */
 @layer utilities {
   .type-text {
-    @apply font-sans font-light tracking-body;
+    @apply font-light tracking-body;
   }
 
   .type-category {
-    @apply font-sans font-bold tracking-header;
+    @apply font-semibold tracking-header;
   }
 }

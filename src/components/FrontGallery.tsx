@@ -92,19 +92,19 @@ export default function FrontGallery() {
               {/* CAPTION (pure text under, no background, no frame) */}
               <div className="mt-3 px-1">
                 <div className="flex items-baseline justify-between gap-4">
-                  <p className="min-w-0 truncate text-[0.7rem] tracking-[0.18em] text-[#4A3C30] lowercase">
+                  <p className="min-w-0 truncate text-[0.7rem] tracking-[0.18em] text-text lowercase">
                     {work.title ?? work.alt}
                   </p>
 
                   {work.year ? (
-                    <p className="shrink-0 text-[0.7rem] tracking-[0.18em] text-[#4A3C30]/60">
+                    <p className="shrink-0 text-[0.7rem] tracking-[0.18em] text-text/60">
                       {work.year}
                     </p>
                   ) : null}
                 </div>
 
                 {work.caption || work.description ? (
-                  <p className="mt-1 line-clamp-2 text-[0.75rem] text-[#4A3C30]/70">
+                  <p className="mt-1 line-clamp-2 text-[0.75rem] text-text/70">
                     {work.caption ?? work.description}
                   </p>
                 ) : null}

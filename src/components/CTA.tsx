@@ -11,7 +11,15 @@ export default function CTA({ onClick }: CTAProps) {
         <button
           type="button"
           onClick={onClick}
-          className="text-base md:text-lg font-normal tracking-[0.22em] text-[#4A3C30]/80 transition-all duration-300 hover:text-[#4A3C30] hover:tracking-[0.26em]"
+          className="
+  text-base md:text-lg
+  font-normal
+  tracking-[0.22em]
+  text-text/80
+  transition-all duration-300
+  hover:text-text
+  hover:tracking-[0.26em]
+"
         >
           get in touch
         </button>

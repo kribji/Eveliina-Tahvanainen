@@ -61,8 +61,8 @@ export default function Header() {
                     <Link
                       key={l.href}
                       href={l.href}
-                      className={`hover:text-[#4A3C30] ${
-                        isActive(l.href) ? 'text-[#4A3C30]' : 'text-[#4A3C30]/80'
+                      className={`hover:text-text ${
+                        isActive(l.href) ? 'text-text' : 'text-text/80'
                       }`}
                     >
                       {l.label}
@@ -74,7 +74,7 @@ export default function Header() {
               <button
                 type="button"
                 onClick={toggleCart}
-                className="ml-auto text-[1.05rem] tracking-[0.14em] text-[#4A3C30]/80 hover:text-[#4A3C30]"
+                className="ml-auto text-[1.05rem] tracking-[0.14em] text-text/80 hover:text-text"
               >
                 <span className="relative inline-block">
                   bag
@@ -92,7 +92,7 @@ export default function Header() {
               <button
                 type="button"
                 onClick={() => setMenuOpen(true)}
-                className="text-[0.8rem] tracking-[0.22em] lowercase text-[#4A3C30]/80 hover:text-[#4A3C30]"
+                className="text-[0.8rem] tracking-[0.22em] lowercase text-text/80 hover:text-text"
               >
                 menu
               </button>
@@ -116,7 +116,7 @@ export default function Header() {
               <button
                 type="button"
                 onClick={toggleCart}
-                className="ml-auto text-[0.8rem] tracking-[0.12em] text-[#4A3C30]/80"
+                className="ml-auto text-[0.8rem] tracking-[0.12em] text-text/80"
               >
                 <span className="relative inline-block">
                   bag
@@ -143,7 +143,7 @@ export default function Header() {
       />
 
       <aside
-        className={`fixed left-0 top-0 z-50 h-full w-[86vw] max-w-sm bg-[#FFFFFF] text-[#4A3C30] shadow-xl transition-transform duration-300 ease-out md:hidden ${
+        className={`fixed left-0 top-0 z-50 h-full w-[86vw] max-w-sm bg-[#FFFFFF] text-text shadow-xl transition-transform duration-300 ease-out md:hidden ${
           menuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         role="dialog"
@@ -167,7 +167,7 @@ export default function Header() {
             <Link
               href="/shop"
               onClick={() => setMenuOpen(false)}
-              className={isActive('/shop') ? 'text-[#4A3C30]' : 'text-[#4A3C30]/80'}
+              className={isActive('/shop') ? 'text-text' : 'text-text/80'}
             >
               shop
             </Link>
@@ -175,7 +175,7 @@ export default function Header() {
             <Link
               href="/exhibition"
               onClick={() => setMenuOpen(false)}
-              className={isActive('/exhibition') ? 'text-[#4A3C30]' : 'text-[#4A3C30]/80'}
+              className={isActive('/exhibition') ? 'text-text' : 'text-text/80'}
             >
               gallery
             </Link>
@@ -183,7 +183,7 @@ export default function Header() {
             <Link
               href="/about"
               onClick={() => setMenuOpen(false)}
-              className={isActive('/about') ? 'text-[#4A3C30]' : 'text-[#4A3C30]/80'}
+              className={isActive('/about') ? 'text-text' : 'text-text/80'}
             >
               about
             </Link>

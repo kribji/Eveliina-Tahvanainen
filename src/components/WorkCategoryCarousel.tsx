@@ -139,7 +139,7 @@ export default function WorkCategoryCarousel() {
   }, []);
 
   return (
-    <section className="bg-[#FFFFFF] py-10 text-[#4A3C30]">
+    <section className="bg-[#FFFFFF] py-10 text-text">
       {/* MOBILE: stacked editorial tiles */}
       <div className="md:hidden">
         {baseCategories.map((category) => (
@@ -155,7 +155,7 @@ export default function WorkCategoryCarousel() {
 
               {/* Always-on label for touch */}
               <div className="pointer-events-none absolute inset-x-0 bottom-6 flex justify-center">
-                <span className=" bg-white/80 px-5 py-2 text-[0.85rem] lowercase tracking-[0.14em] text-[#4A3C30] backdrop-blur-[2px] md:text-[0.95rem]">
+                <span className=" bg-white/80 px-5 py-2 text-[0.85rem] lowercase tracking-[0.14em] text-text backdrop-blur-[2px] md:text-[0.95rem]">
                   {category.title}
                 </span>
               </div>

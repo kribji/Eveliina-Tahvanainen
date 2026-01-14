@@ -17,7 +17,7 @@ export default function CheckoutPage() {
 
   if (submitted) {
     return (
-      <main className="bg-[#FFF9F3] text-[#4A3C30]">
+      <main className="bg-[#FFFFFF] text-text">
         <div className="mx-auto max-w-5xl px-4 py-16 space-y-6">
           <h1 className="text-[0.95rem] tracking-[0.22em] lowercase">thank you</h1>
           <p className="text-sm opacity-75">
@@ -36,7 +36,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="bg-[#FFF9F3] text-[#4A3C30]">
+    <main className="bg-[#FFFFFF] text-text">
       <div className="mx-auto max-w-5xl px-4 py-12 md:py-16 space-y-10">
         {/* Back */}
         <div>
@@ -115,11 +115,16 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 disabled={isEmpty}
-                className={`mt-4 w-full py-3 text-center text-[0.7rem] tracking-[0.25em] transition-colors ${
-                  isEmpty
-                    ? 'bg-[#4A3C30]/30 text-[#FFF9F3]/70 cursor-not-allowed'
-                    : 'bg-[#5f4a3b] text-[#FFF9F3] hover:bg-[#4f3e32]'
-                }`}
+                className={`
+    mt-4 w-full py-3
+    text-center text-[0.7rem] tracking-[0.25em]
+    transition-colors
+    ${
+      isEmpty
+        ? 'bg-text/30 text-background/70 cursor-not-allowed'
+        : 'bg-text text-background hover:bg-text/85'
+    }
+  `}
               >
                 place order
               </button>
