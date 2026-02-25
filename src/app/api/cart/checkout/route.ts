@@ -1,11 +1,30 @@
+// src/app/api/cart/checkout/route.ts
+
 import { NextResponse } from 'next/server';
 import { shopifyFetch } from '@/lib/shopify';
+
+type CartLineInput = {
+  merchandiseId: string;
+  quantity: number;
+};
+
+type CartCreateVariables = {
+  lines: CartLineInput[];
+};
+
+type CartCreateResponse = {
+  cartCreate: {
+    cart: {
+      checkoutUrl: string;
+    } | null;
+    userErrors: { field: string[] | null; message: string }[];
+  };
+};
 
 const CART_CREATE = /* GraphQL */ `
   mutation CartCreate($lines: [CartLineInput!]!) {
     cartCreate(input: { lines: $lines }) {
       cart {
-        id
         checkoutUrl
       }
       userErrors {
@@ -16,63 +35,38 @@ const CART_CREATE = /* GraphQL */ `
   }
 `;
 
-type CartCreateResponse = {
-  cartCreate: {
-    cart: { id: string; checkoutUrl: string } | null;
-    userErrors: Array<{ field: string[] | null; message: string }>;
-  };
-};
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    const lines = (body?.lines ?? []) as CartLineInput[];
 
-    const lines = Array.isArray(body?.lines) ? body.lines : [];
-    if (lines.length === 0) {
-      return NextResponse.json({ ok: false, error: 'No cart lines provided' }, { status: 400 });
+    if (!Array.isArray(lines) || lines.length === 0) {
+      return NextResponse.json({ ok: false, error: 'Missing cart lines' }, { status: 400 });
     }
 
-    // Basic validation (don’t trust client price; Shopify will price at checkout)
-    for (const l of lines) {
-      if (!l?.merchandiseId || typeof l?.merchandiseId !== 'string') {
-        return NextResponse.json(
-          { ok: false, error: 'Each line must include merchandiseId' },
-          { status: 400 },
-        );
-      }
-      const qty = Number(l?.quantity);
-      if (!Number.isFinite(qty) || qty < 1) {
-        return NextResponse.json(
-          { ok: false, error: 'Each line must include a valid quantity' },
-          { status: 400 },
-        );
-      }
-    }
+    const variables: CartCreateVariables = { lines };
 
-    const data = await shopifyFetch<CartCreateResponse, { lines: any[] }>({
+    const data = await shopifyFetch<CartCreateResponse>({
       query: CART_CREATE,
-      variables: { lines },
+      variables,
     });
 
-    const errors = data.cartCreate.userErrors ?? [];
-    if (errors.length) {
+    const errors = data?.cartCreate?.userErrors ?? [];
+    if (errors.length > 0) {
       return NextResponse.json(
-        { ok: false, error: errors.map((e) => e.message).join(' • ') },
+        { ok: false, error: errors.map((e) => e.message).join(', ') },
         { status: 400 },
       );
     }
 
-    const checkoutUrl = data.cartCreate.cart?.checkoutUrl;
+    const checkoutUrl = data?.cartCreate?.cart?.checkoutUrl;
     if (!checkoutUrl) {
-      return NextResponse.json(
-        { ok: false, error: 'No checkoutUrl returned from Shopify' },
-        { status: 500 },
-      );
+      return NextResponse.json({ ok: false, error: 'No checkoutUrl returned' }, { status: 500 });
     }
 
     return NextResponse.json({ ok: true, checkoutUrl });
   } catch (err: any) {
-    console.error('CART CHECKOUT API ERROR:', err);
+    console.error('CHECKOUT API ERROR:', err);
     return NextResponse.json({ ok: false, error: err?.message ?? String(err) }, { status: 500 });
   }
 }

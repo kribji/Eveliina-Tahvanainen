@@ -34,7 +34,7 @@ export default function Footer() {
           {/* LEFT */}
           <div className="flex flex-col gap-2 text-left">
             <a href="mailto:hello@yourdomain.com" className="transition hover:opacity-70">
-              hello@yourdomain.com
+              hello@eveliinastudio.com
             </a>
 
             <span>
