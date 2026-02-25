@@ -13,6 +13,7 @@ export default function Hero() {
             fill
             priority
             className="object-cover"
+            sizes="50vw"
           />
           {/* sheer layer */}
           <div className="absolute inset-0 bg-white/25" aria-hidden="true" />
@@ -26,6 +27,7 @@ export default function Hero() {
             fill
             priority
             className="object-cover"
+            sizes="50vw"
           />
           {/* sheer layer */}
           <div className="absolute inset-0 bg-white/25" aria-hidden="true" />
@@ -41,6 +43,12 @@ export default function Hero() {
             fill
             className="object-contain"
             priority
+            sizes="
+    (min-width: 1280px) 40vw,
+    (min-width: 1024px) 45vw,
+    (min-width: 768px) 50vw,
+    80vw
+  "
           />
         </div>
       </div>

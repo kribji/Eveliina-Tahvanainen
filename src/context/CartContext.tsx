@@ -4,7 +4,8 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { Product } from '@/lib/products';
 
 type CartItem = {
-  id: string;
+  id: string; // product id (your internal/product gid)
+  merchandiseId: string; // ✅ Shopify ProductVariant GID (required for checkout)
   slug: string;
   title: string;
   price: number;
@@ -12,7 +13,10 @@ type CartItem = {
   image: string;
 };
 
-type ProductWithPrice = Product & { price?: number };
+type ProductWithCartFields = Product & {
+  price?: number;
+  merchandiseId?: string; // ✅ variant id comes from Shopify product query
+};
 
 type CartContextValue = {
   items: CartItem[];
@@ -22,8 +26,8 @@ type CartContextValue = {
   openCart: () => void;
   closeCart: () => void;
   toggleCart: () => void;
-  addToCart: (product: ProductWithPrice, quantity?: number) => void;
-  removeFromCart: (id: string) => void;
+  addToCart: (product: ProductWithCartFields, quantity?: number) => void;
+  removeFromCart: (merchandiseId: string) => void;
   clearCart: () => void;
 };
 
@@ -33,13 +37,16 @@ const STORAGE_KEY = 'ev-cart';
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(() => {
-    // Load once on init (client only)
     if (typeof window === 'undefined') return [];
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       if (!raw) return [];
-      const parsed = JSON.parse(raw) as CartItem[];
-      return Array.isArray(parsed) ? parsed : [];
+      const parsed = JSON.parse(raw) as unknown;
+
+      if (!Array.isArray(parsed)) return [];
+
+      // ✅ Drop any legacy items that don't have a merchandiseId (old carts)
+      return parsed.filter((i: any) => i && typeof i.merchandiseId === 'string');
     } catch {
       return [];
     }
@@ -56,14 +63,25 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items]);
 
-  const addToCart = (product: ProductWithPrice, quantity = 1) => {
+  const addToCart = (product: ProductWithCartFields, quantity = 1) => {
     const price = typeof product.price === 'number' ? product.price : 0;
+    const merchandiseId = product.merchandiseId;
+
+    // ✅ Hard requirement for Shopify checkout
+    if (!merchandiseId) {
+      console.error('addToCart: missing merchandiseId (variant id). Product:', product);
+      return;
+    }
 
     setItems((prev) => {
-      const existing = prev.find((item) => item.id === product.id);
+      // ✅ Uniqueness should be by variant, not product id
+      const existing = prev.find((item) => item.merchandiseId === merchandiseId);
+
       if (existing) {
         return prev.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item,
+          item.merchandiseId === merchandiseId
+            ? { ...item, quantity: item.quantity + quantity }
+            : item,
         );
       }
 
@@ -71,6 +89,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         ...prev,
         {
           id: product.id,
+          merchandiseId,
           slug: product.slug,
           title: product.title,
           price,
@@ -83,8 +102,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setIsOpen(true);
   };
 
-  const removeFromCart = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+  // ✅ Remove by variant id (merchandiseId)
+  const removeFromCart = (merchandiseId: string) => {
+    setItems((prev) => prev.filter((item) => item.merchandiseId !== merchandiseId));
   };
 
   const clearCart = () => setItems([]);

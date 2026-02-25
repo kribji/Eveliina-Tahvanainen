@@ -12,8 +12,15 @@ export default function Header() {
   const pathname = usePathname();
   const isHome = pathname === '/';
   const { itemCount, toggleCart } = useCart();
+
   const [pastThreshold, setPastThreshold] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // ✅ hydration guard
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const isActive = (href: string) => pathname === href;
 
@@ -48,6 +55,7 @@ export default function Header() {
                       fill
                       className="object-contain"
                       priority
+                      sizes="160px"
                     />
                   </div>
                 </Link>
@@ -78,7 +86,7 @@ export default function Header() {
               >
                 <span className="relative inline-block">
                   bag
-                  {itemCount > 0 && (
+                  {mounted && itemCount > 0 && (
                     <span className="absolute -right-3 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#4A3C30] px-1 text-[0.65rem] leading-none text-[#FFFFFF]">
                       {itemCount}
                     </span>
@@ -87,7 +95,7 @@ export default function Header() {
               </button>
             </div>
 
-            {/* MOBILE: burger / centered logo / bag */}
+            {/* MOBILE */}
             <div className="relative flex h-12 items-center md:hidden">
               <button
                 type="button"
@@ -109,6 +117,7 @@ export default function Header() {
                     fill
                     className="object-contain"
                     priority
+                    sizes="80px"
                   />
                 </div>
               </Link>
@@ -120,7 +129,7 @@ export default function Header() {
               >
                 <span className="relative inline-block">
                   bag
-                  {itemCount > 0 && (
+                  {mounted && itemCount > 0 && (
                     <span className="absolute -right-3 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#4A3C30] px-1 text-[0.65rem] leading-none text-[#FFFFFF]">
                       {itemCount}
                     </span>
@@ -132,7 +141,7 @@ export default function Header() {
         </div>
       </header>
 
-      {/* MOBILE MENU DRAWER */}
+      {/* MOBILE MENU BACKDROP */}
       <button
         type="button"
         aria-label="Close menu"
@@ -142,6 +151,7 @@ export default function Header() {
         }`}
       />
 
+      {/* MOBILE MENU */}
       <aside
         className={`fixed left-0 top-0 z-50 h-full w-[86vw] max-w-sm bg-[#FFFFFF] text-text shadow-xl transition-transform duration-300 ease-out md:hidden ${
           menuOpen ? 'translate-x-0' : '-translate-x-full'
@@ -155,7 +165,7 @@ export default function Header() {
             <button
               type="button"
               onClick={() => setMenuOpen(false)}
-              className="text-[0.8 rem] tracking-[0.18em] opacity-70 hover:opacity-100"
+              className="text-[0.8rem] tracking-[0.18em] opacity-70 hover:opacity-100"
             >
               x
             </button>
@@ -163,30 +173,17 @@ export default function Header() {
 
           <div className="h-px bg-[#4A3C30]/10" />
 
-          <nav className="flex flex-col px-5 py-6 gap-5 text-[0.95rem] tracking-[0.14em]">
-            <Link
-              href="/shop"
-              onClick={() => setMenuOpen(false)}
-              className={isActive('/shop') ? 'text-text' : 'text-text/80'}
-            >
-              shop
-            </Link>
-
-            <Link
-              href="/exhibition"
-              onClick={() => setMenuOpen(false)}
-              className={isActive('/exhibition') ? 'text-text' : 'text-text/80'}
-            >
-              gallery
-            </Link>
-
-            <Link
-              href="/about"
-              onClick={() => setMenuOpen(false)}
-              className={isActive('/about') ? 'text-text' : 'text-text/80'}
-            >
-              about
-            </Link>
+          <nav className="flex flex-col gap-5 px-5 py-6 text-[0.95rem] tracking-[0.14em]">
+            {['/shop', '/exhibition', '/about'].map((href) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setMenuOpen(false)}
+                className={isActive(href) ? 'text-text' : 'text-text/80'}
+              >
+                {href.replace('/', '')}
+              </Link>
+            ))}
           </nav>
         </div>
       </aside>

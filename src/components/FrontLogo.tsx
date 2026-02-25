@@ -21,6 +21,7 @@ export default function FrontLogo() {
               alt="Eveliina Tahvanainen"
               fill
               className="object-contain"
+              sizes="80px"
             />
           </div>
         </Link>

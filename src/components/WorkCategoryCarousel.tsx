@@ -3,15 +3,56 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { workCategories } from '@/lib/work';
+
+type ShopifyCollection = {
+  id: string;
+  handle: string;
+  title: string;
+  image?: { url: string } | null;
+};
 
 type Category = {
-  slug: string;
+  handle: string;
   title: string;
-  image: string;
+  imageUrl: string | null;
 };
 
 const SCROLL_SPEED = 520; // px/sec
+
+// ✅ Your preferred order (by handle)
+const PREFERRED_CATEGORY_ORDER = [
+  'mugs',
+  'bowls',
+  'tableware',
+  'vases',
+  'glass',
+  'sculptures',
+] as const;
+
+function sortByPreferredOrder<T extends { handle: string }>(items: T[]) {
+  const orderIndex = new Map<string, number>(
+    PREFERRED_CATEGORY_ORDER.map((h, i) => [h.toLowerCase(), i]),
+  );
+
+  // Stable sort: preferred first, unknown after (keep original relative order for unknowns)
+  return [...items]
+    .map((item, originalIndex) => ({ item, originalIndex }))
+    .sort((a, b) => {
+      const ai = orderIndex.get(a.item.handle.toLowerCase());
+      const bi = orderIndex.get(b.item.handle.toLowerCase());
+
+      const aKnown = ai !== undefined;
+      const bKnown = bi !== undefined;
+
+      if (aKnown && bKnown) return (ai as number) - (bi as number);
+      if (aKnown) return -1;
+      if (bKnown) return 1;
+
+      // both unknown -> preserve original order
+      return a.originalIndex - b.originalIndex;
+    })
+    .map((x) => x.item);
+}
 
 export default function WorkCategoryCarousel() {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
@@ -21,28 +62,62 @@ export default function WorkCategoryCarousel() {
   const loopWidthRef = useRef<number>(0);
 
   const [scrollable, setScrollable] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const baseCategories: Category[] = useMemo(
-    () => [
-      ...workCategories.map((c) => ({
-        slug: String(c.slug),
-        title: c.title,
-        image: c.image,
-      })),
-      { slug: 'bowls', title: 'bowls', image: '/bowls.jpeg' },
-      { slug: 'cups', title: 'cups', image: '/08.jpeg' },
-      { slug: 'plates', title: 'plates', image: '/bowls2.jpeg' },
-      { slug: 'vases', title: 'vases', image: '/sculptures2.jpeg' },
-      { slug: 'objects', title: 'objects', image: '/06.jpeg' },
-    ],
-    [],
-  );
+  useEffect(() => {
+    let cancelled = false;
 
-  // looped for desktop carousel
-  const loopedCategories = useMemo(
-    () => [...baseCategories, ...baseCategories, ...baseCategories],
-    [baseCategories],
-  );
+    const run = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const res = await fetch('/api/collections', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!res.ok) throw new Error(`Failed to load collections (${res.status})`);
+
+        const data = (await res.json()) as
+          | ShopifyCollection[]
+          | { collections?: ShopifyCollection[] };
+        const list = Array.isArray(data) ? data : (data.collections ?? []);
+
+        const mapped: Category[] = list
+          .filter((c) => c?.handle && c?.title)
+          .map((c) => ({
+            handle: c.handle,
+            title: c.title,
+            imageUrl: c.image?.url ?? null,
+          }));
+
+        // ✅ Apply preferred order here
+        const ordered = sortByPreferredOrder(mapped);
+
+        if (!cancelled) setCategories(ordered);
+      } catch (e) {
+        if (!cancelled) {
+          setError(e instanceof Error ? e.message : 'Failed to load collections');
+          setCategories([]);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const loopedCategories = useMemo(() => {
+    if (categories.length === 0) return [];
+    return [...categories, ...categories, ...categories];
+  }, [categories]);
 
   const recompute = () => {
     const el = scrollerRef.current;
@@ -110,16 +185,22 @@ export default function WorkCategoryCarousel() {
   };
 
   useEffect(() => {
-    recompute();
-
     const el = scrollerRef.current;
     if (!el) return;
+
+    recompute();
 
     requestAnimationFrame(() => {
       recompute();
       const loopWidth = loopWidthRef.current;
       if (loopWidth) el.scrollLeft = loopWidth;
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categories.length]);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
 
     const onResize = () => {
       recompute();
@@ -136,24 +217,46 @@ export default function WorkCategoryCarousel() {
       window.removeEventListener('resize', onResize);
       ro.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (loading) {
+    return (
+      <section className="bg-[#FFFFFF] py-10 text-text">
+        <div className="px-4 text-sm opacity-70">Loading categories…</div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="bg-[#FFFFFF] py-10 text-text">
+        <div className="px-4 text-sm opacity-70">Couldn’t load categories: {error}</div>
+      </section>
+    );
+  }
+
+  if (categories.length === 0) return null;
 
   return (
     <section className="bg-[#FFFFFF] py-10 text-text">
-      {/* MOBILE: stacked editorial tiles */}
+      {/* MOBILE */}
       <div className="md:hidden">
-        {baseCategories.map((category) => (
-          <Link key={category.slug} href={`/work/${category.slug}`} className="block">
+        {categories.map((category) => (
+          <Link key={category.handle} href={`/shop/${category.handle}`} className="block">
             <figure className="font relative h-[70vh] min-h-[520px] w-full overflow-hidden bg-[#FFF9F3]">
-              <Image
-                src={category.image}
-                alt={category.title}
-                fill
-                className="object-cover"
-                sizes="100vw"
-              />
+              {category.imageUrl ? (
+                <Image
+                  src={category.imageUrl}
+                  alt={category.title}
+                  fill
+                  className="object-cover"
+                  sizes="100vw"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-[#FFF9F3]" aria-hidden="true" />
+              )}
 
-              {/* Always-on label for touch */}
               <div className="pointer-events-none absolute inset-x-0 bottom-6 flex justify-center">
                 <span className=" bg-white/80 px-5 py-2 text-[0.85rem] lowercase tracking-[0.14em] text-text backdrop-blur-[2px] md:text-[0.95rem]">
                   {category.title}
@@ -164,7 +267,7 @@ export default function WorkCategoryCarousel() {
         ))}
       </div>
 
-      {/* DESKTOP: endless carousel */}
+      {/* DESKTOP */}
       <div className="relative hidden md:block">
         {scrollable && (
           <div
@@ -200,19 +303,23 @@ export default function WorkCategoryCarousel() {
         >
           {loopedCategories.map((category, index) => (
             <Link
-              key={`${category.slug}-${index}`}
-              href={`/work/${category.slug}`}
+              key={`${category.handle}-${index}`}
+              href={`/shop/${category.handle}`}
               className="group relative block shrink-0"
               onMouseLeave={stopScroll}
             >
-              <figure className="relative h-[94vh] min-h-[680px] max-h-[1060px] w-[70vw] md:w-[50vw] lg:w-[44vw] overflow-hidden bg-[#FFFFFF]">
-                <Image
-                  src={category.image}
-                  alt={category.title}
-                  fill
-                  className="object-cover"
-                  sizes="(min-width: 1024px) 44vw, (min-width: 768px) 50vw, 70vw"
-                />
+              <figure className="relative h-[94vh] min-h-[680px] max-h-[1060px] w-[70vw] overflow-hidden bg-[#FFFFFF] md:w-[50vw] lg:w-[44vw]">
+                {category.imageUrl ? (
+                  <Image
+                    src={category.imageUrl}
+                    alt={category.title}
+                    fill
+                    className="object-cover"
+                    sizes="(min-width: 1024px) 44vw, (min-width: 768px) 50vw, 70vw"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-[#FFFFFF]" aria-hidden="true" />
+                )}
 
                 <div className="absolute inset-0 bg-white/10" aria-hidden="true" />
 
