@@ -16,7 +16,7 @@ export const frontWorks = [
   {
     src: '/01.jpeg',
     alt: 'Embodied Earth',
-    title: 'Volcanic Home',
+    title: 'Embodied Earth',
     caption: 'Ceramics',
     width: 'w-[min(560px,92vw)]', // hero
     align: 'left',
