@@ -1,49 +1,51 @@
 // src/lib/shopify.ts
 
-type ShopifyFetchParams = {
+type ShopifyFetchParams<TVariables> = {
   query: string;
-  variables?: Record<string, any>;
+  variables?: TVariables;
 };
 
-function requireEnv(name: string) {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing env var: ${name}`);
-  return v;
-}
+export async function shopifyFetch<TResponse, TVariables = Record<string, unknown>>(
+  params: ShopifyFetchParams<TVariables>,
+): Promise<TResponse> {
+  const { query, variables } = params;
 
-const SHOPIFY_DOMAIN = requireEnv('SHOPIFY_DOMAIN');
-const STOREFRONT_TOKEN = requireEnv('SHOPIFY_STOREFRONT_TOKEN');
-const API_VERSION = process.env.SHOPIFY_API_VERSION ?? '2025-10';
+  const endpoint = process.env.SHOPIFY_STOREFRONT_API_ENDPOINT;
+  const token = process.env.SHOPIFY_STOREFRONT_API_TOKEN;
 
-const endpoint = `https://${SHOPIFY_DOMAIN}/api/${API_VERSION}/graphql.json`;
+  if (!endpoint || !token) {
+    throw new Error('Missing SHOPIFY_STOREFRONT_API_ENDPOINT or SHOPIFY_STOREFRONT_API_TOKEN');
+  }
 
-export async function shopifyFetch<T>({ query, variables }: ShopifyFetchParams): Promise<T> {
   const res = await fetch(endpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-Shopify-Storefront-Access-Token': STOREFRONT_TOKEN,
+      'X-Shopify-Storefront-Access-Token': token,
     },
-    body: JSON.stringify({ query, variables }),
-    // Next caching defaults can surprise you; keep it simple for now:
-    cache: 'no-store',
+    body: JSON.stringify({
+      query,
+      variables,
+    }),
   });
 
-  const json = await res.json();
-
-  if (!res.ok || json?.errors) {
-    throw new Error(
-      JSON.stringify(
-        {
-          status: res.status,
-          statusText: res.statusText,
-          errors: json?.errors,
-        },
-        null,
-        2,
-      ),
-    );
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`Shopify request failed: ${res.status} ${res.statusText} ${text}`);
   }
 
-  return json.data as T;
+  const json = (await res.json()) as {
+    data?: TResponse;
+    errors?: Array<{ message: string }>;
+  };
+
+  if (json.errors?.length) {
+    throw new Error(json.errors.map((e) => e.message).join(', '));
+  }
+
+  if (!json.data) {
+    throw new Error('Shopify response missing data');
+  }
+
+  return json.data;
 }
