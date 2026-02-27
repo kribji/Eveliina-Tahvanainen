@@ -9,6 +9,7 @@ const PRODUCT_BY_HANDLE = /* GraphQL */ `
       handle
       title
       description
+
       featuredImage {
         url
         altText
@@ -19,15 +20,27 @@ const PRODUCT_BY_HANDLE = /* GraphQL */ `
           altText
         }
       }
-      variants(first: 1) {
+
+      options {
+        name
+        values
+      }
+
+      variants(first: 50) {
         nodes {
           id
+          availableForSale
+          selectedOptions {
+            name
+            value
+          }
           price {
             amount
             currencyCode
           }
         }
       }
+
       priceRange {
         minVariantPrice {
           amount
@@ -35,7 +48,6 @@ const PRODUCT_BY_HANDLE = /* GraphQL */ `
         }
       }
 
-      # Metafields
       dimensions: metafield(namespace: "custom", key: "dimensions") {
         value
       }
@@ -48,6 +60,12 @@ const PRODUCT_BY_HANDLE = /* GraphQL */ `
     }
   }
 `;
+
+function findColorOptionName(options: { name: string; values: string[] }[]) {
+  const candidates = ['color', 'colour', 'väri', 'vari'];
+  const hit = options.find((o) => candidates.includes(o.name.trim().toLowerCase()));
+  return hit?.name ?? null; // return the ACTUAL stored name (e.g. "Color")
+}
 
 export async function GET(req: Request, ctx: any) {
   try {
@@ -66,15 +84,16 @@ export async function GET(req: Request, ctx: any) {
         description: string;
         featuredImage: { url: string; altText: string | null } | null;
         images: { nodes: { url: string; altText: string | null }[] };
+        options: { name: string; values: string[] }[];
         variants: {
           nodes: {
             id: string;
+            availableForSale: boolean;
+            selectedOptions: { name: string; value: string }[];
             price: { amount: string; currencyCode: string };
           }[];
         };
         priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
-
-        // Metafields
         dimensions: { value: string } | null;
         materials: { value: string } | null;
         care: { value: string } | null;
@@ -92,7 +111,11 @@ export async function GET(req: Request, ctx: any) {
     }
 
     const pdt = data.product;
-    const firstVariant = pdt.variants?.nodes?.[0] ?? null;
+
+    const colorOptionName = findColorOptionName(pdt.options ?? []);
+
+    const firstAvailableVariant =
+      pdt.variants?.nodes?.find((v) => v.availableForSale) ?? pdt.variants?.nodes?.[0] ?? null;
 
     return NextResponse.json({
       ok: true,
@@ -105,13 +128,15 @@ export async function GET(req: Request, ctx: any) {
         alt: pdt.featuredImage?.altText ?? pdt.title,
         images: pdt.images.nodes,
 
-        // keep your existing price for display (minVariantPrice)
+        // keep existing display price
         price: pdt.priceRange.minVariantPrice,
 
-        // variant id used as Shopify CartLineInput.merchandiseId
-        variantId: firstVariant?.id ?? null,
+        // NEW
+        options: pdt.options ?? [],
+        colorOptionName, // e.g. "Color" (or "Väri")
+        variants: pdt.variants?.nodes ?? [],
+        variantId: firstAvailableVariant?.id ?? null, // fallback
 
-        // Metafields exposed to frontend
         dimensions: pdt.dimensions?.value ?? null,
         materials: pdt.materials?.value ?? null,
         care: pdt.care?.value ?? null,

@@ -8,9 +8,6 @@ export default function FrontIntro() {
 
         <p className="mt-10 text-[1.05rem] tracking-[0.18em] text-text/70">
           Contemporary glass and ceramic pieces with Nordic touch. Designed for interiors, spaces
-          <br className="hidden sm:block" />
-        </p>
-        <p className="mt-10 text-[1.05rem] tracking-[0.18em] text-text/70">
           and thoughtful living.
           <br className="hidden sm:block" />
         </p>

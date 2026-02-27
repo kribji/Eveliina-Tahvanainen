@@ -6,6 +6,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 
+/** Shopify types coming from /api/product/[handle] */
+type ShopifyOption = { name: string; values: string[] };
+
+type ShopifyVariant = {
+  id: string;
+  availableForSale: boolean;
+  selectedOptions: { name: string; value: string }[];
+  price: { amount: string; currencyCode: string };
+};
+
 type ShopifyProduct = {
   id: string;
   handle: string;
@@ -14,8 +24,19 @@ type ShopifyProduct = {
   image: string | null;
   alt: string;
   images: { url: string; altText: string | null }[];
+
+  // display price (minVariantPrice)
   price: { amount: string; currencyCode: string };
+
+  // fallback (first available variant id)
   variantId: string | null;
+
+  // variants/options
+  options: ShopifyOption[];
+  colorOptionName: string | null; // e.g. "Color" or "Väri"
+  variants: ShopifyVariant[];
+
+  // Metafields
   dimensions: string | null;
   materials: string | null;
   care: string | null;
@@ -40,10 +61,13 @@ export default function ProductPage() {
   const [related, setRelated] = useState<RelatedProduct[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+
   useEffect(() => {
     if (!productHandle) return;
 
     (async () => {
+      setLoading(true);
       try {
         const res = await fetch(`/api/product/${productHandle}`);
         const json = await res.json();
@@ -98,6 +122,46 @@ export default function ProductPage() {
     return { mainImg: main, secondImg: second, priceLabel: label, priceNumber: amount };
   }, [product]);
 
+  const colors = useMemo(() => {
+    if (!product?.colorOptionName) return [];
+    const opt = product.options?.find((o) => o.name === product.colorOptionName);
+    return opt?.values ?? [];
+  }, [product]);
+
+  useEffect(() => {
+    if (!product?.colorOptionName) {
+      setSelectedColor(null);
+      return;
+    }
+
+    const opt = product.options?.find((o) => o.name === product.colorOptionName);
+    const first = opt?.values?.[0] ?? null;
+
+    setSelectedColor((prev) => {
+      if (prev && (opt?.values ?? []).includes(prev)) return prev;
+      return first;
+    });
+  }, [product]);
+
+  const selectedVariant = useMemo(() => {
+    if (!product) return null;
+
+    if (!product.colorOptionName || !selectedColor) {
+      return product.variants?.find((v) => v.availableForSale) ?? product.variants?.[0] ?? null;
+    }
+
+    const match =
+      product.variants?.find((v) =>
+        v.selectedOptions?.some(
+          (so) => so.name === product.colorOptionName && so.value === selectedColor,
+        ),
+      ) ?? null;
+
+    return (
+      match ?? product.variants?.find((v) => v.availableForSale) ?? product.variants?.[0] ?? null
+    );
+  }, [product, selectedColor]);
+
   if (!productHandle) {
     return (
       <main className="mx-auto max-w-5xl px-4 py-16">
@@ -118,7 +182,7 @@ export default function ProductPage() {
     );
   }
 
-  const canAddToCart = Boolean(product.variantId);
+  const canAddToCart = Boolean(selectedVariant?.id);
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-16 space-y-14">
@@ -170,11 +234,40 @@ export default function ProductPage() {
 
           <p className="text-sm leading-relaxed text-text/75">{product.description}</p>
 
+          {colors.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-[0.7rem] tracking-[0.22em] text-text/70">
+                color{selectedColor ? `: ${selectedColor}` : ''}
+              </p>
+
+              <div className="flex flex-wrap gap-2">
+                {colors.map((c) => {
+                  const active = c === selectedColor;
+                  return (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setSelectedColor(c)}
+                      className={`px-3 py-2 text-[0.7rem] tracking-[0.18em] border transition ${
+                        active
+                          ? 'border-text bg-text text-background'
+                          : 'border-text/20 hover:border-text/50'
+                      }`}
+                    >
+                      {c}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <button
             type="button"
             disabled={!canAddToCart}
             onClick={() => {
-              if (!product.variantId) return;
+              const merchId = selectedVariant?.id ?? product.variantId;
+              if (!merchId) return;
 
               addToCart(
                 {
@@ -182,8 +275,13 @@ export default function ProductPage() {
                   slug: product.handle,
                   title: product.title,
                   image: product.image ?? product.images?.[0]?.url ?? '/placeholder.jpg',
-                  merchandiseId: product.variantId,
-                  price: Number.isFinite(priceNumber) ? priceNumber : 0,
+                  merchandiseId: merchId,
+                  price: selectedVariant
+                    ? Number(selectedVariant.price.amount)
+                    : Number.isFinite(priceNumber)
+                      ? priceNumber
+                      : 0,
+                  selectedColor: selectedColor ?? undefined,
                 } as any,
                 1,
               );

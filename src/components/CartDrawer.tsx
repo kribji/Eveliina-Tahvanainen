@@ -7,27 +7,20 @@ import { useCart } from '@/context/CartContext';
 export default function CartDrawer() {
   const { isOpen, closeCart, items, itemCount } = useCart();
 
-  // ✅ hydration guard
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  // ✅ during SSR (and first client paint), render a stable shell
-  // so server HTML === client HTML.
   if (!mounted) {
     return (
       <>
-        {/* Backdrop shell */}
         <div className="fixed inset-0 z-40 bg-black/20 opacity-0 pointer-events-none" />
-        {/* Drawer shell */}
         <aside className="fixed right-0 top-0 z-50 h-full w-[86vw] max-w-sm translate-x-full bg-white shadow-xl" />
       </>
     );
   }
 
-  // ✅ real UI after hydration
   return (
     <>
-      {/* Backdrop */}
       <button
         type="button"
         aria-label="Close cart"
@@ -37,7 +30,6 @@ export default function CartDrawer() {
         }`}
       />
 
-      {/* Drawer */}
       <aside
         className={`fixed right-0 top-0 z-50 h-full w-[86vw] max-w-sm bg-white shadow-xl transition-transform duration-300 ease-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
@@ -66,13 +58,21 @@ export default function CartDrawer() {
               <p className="text-sm text-text/70">Your bag is empty.</p>
             ) : (
               <ul className="space-y-4">
-                {items.map((item) => (
+                {items.map((item: any) => (
                   <li key={item.merchandiseId} className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-sm text-text">{item.title}</p>
+
+                      {item.selectedColor && (
+                        <p className="text-xs text-text/60">Color: {item.selectedColor}</p>
+                      )}
+
                       <p className="text-xs text-text/60">Qty: {item.quantity}</p>
                     </div>
-                    <p className="text-sm text-text/70">{item.price ? `${item.price} EUR` : ''}</p>
+
+                    <p className="text-sm text-text/70">
+                      {typeof item.price === 'number' ? `${item.price} EUR` : ''}
+                    </p>
                   </li>
                 ))}
               </ul>
@@ -83,7 +83,7 @@ export default function CartDrawer() {
             <Link
               href="/checkout"
               onClick={closeCart}
-              className="block w-full rounded-md bg-[#4A3C30] px-4 py-3 text-center text-sm tracking-[0.14em] text-white"
+              className="block w-full bg-text px-4 py-3 text-center text-sm tracking-[0.14em] text-white"
             >
               checkout
             </Link>
