@@ -144,7 +144,7 @@ export const frontWorks = [
     year: '2022',
   },
   {
-    src: '/foampiece-on-chain.jpeg',
+    src: '/foampice-on-chain.jpeg',
     alt: 'Untitled',
     title: 'Untitled',
     caption: 'Foam glass',
