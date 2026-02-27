@@ -13,7 +13,6 @@ export default function CheckoutPage() {
 
   const isEmpty = items.length === 0;
 
-  // ✅ block checkout if any line is missing variant id
   const missingMerchandiseId = items.some((i: any) => !i?.merchandiseId);
 
   const formattedTotal = useMemo(() => {
@@ -40,7 +39,6 @@ export default function CheckoutPage() {
   return (
     <main className="bg-[#FFFFFF] text-text">
       <div className="mx-auto max-w-5xl px-4 py-12 md:py-16 space-y-10">
-        {/* Back */}
         <div>
           <Link
             href="/shop"
@@ -51,7 +49,6 @@ export default function CheckoutPage() {
         </div>
 
         <div className="grid gap-10 md:grid-cols-[1.2fr_0.8fr] md:gap-12">
-          {/* LEFT: info + button */}
           <section className="space-y-6">
             <h1 className="text-[0.95rem] tracking-[0.22em] lowercase">checkout</h1>
 
@@ -134,7 +131,6 @@ export default function CheckoutPage() {
             )}
           </section>
 
-          {/* RIGHT: summary */}
           <aside className="space-y-5">
             <div className="flex items-baseline justify-between">
               <h2 className="text-[0.85rem] tracking-[0.18em] lowercase">
@@ -166,43 +162,61 @@ export default function CheckoutPage() {
               </div>
             ) : (
               <ul className="space-y-4">
-                {items.map((item: any) => (
-                  <li key={item.merchandiseId} className="flex gap-4">
-                    <div className="relative h-20 w-16 overflow-hidden bg-white/40">
-                      <Image
-                        src={item.image}
-                        alt={item.title}
-                        fill
-                        className="object-cover"
-                        sizes="64px"
-                      />
-                    </div>
+                {items.map((item: any) => {
+const productHref = item?.productPath || '/shop';
 
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-3">
-                        <p className="truncate text-[0.75rem] tracking-[0.14em] lowercase">
-                          {item.title}
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => removeFromCart(item.merchandiseId)}
-                          className="text-[0.7rem] tracking-[0.14em] opacity-60 hover:opacity-100"
-                        >
-                          remove
-                        </button>
-                      </div>
+                  return (
+                    <li key={item.merchandiseId} className="flex gap-4">
+                      <Link
+                        href={productHref}
+                        className="relative h-20 w-16 overflow-hidden bg-white/40"
+                        aria-label={`Open ${item.title}`}
+                      >
+                        <Image
+                          src={item.image}
+                          alt={item.title}
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                        />
+                      </Link>
 
-                      <div className="mt-1 flex items-baseline justify-between text-[0.7rem] tracking-[0.14em] opacity-80">
-                        <span>qty {item.quantity}</span>
-                        <span>
-                          {typeof item.price === 'number'
-                            ? `${item.price.toLocaleString('no-NO')} EUR`
-                            : 'on request'}
-                        </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-3">
+                          <Link
+                            href={productHref}
+                            className="truncate text-[0.75rem] tracking-[0.14em] lowercase underline-offset-4 hover:underline"
+                          >
+                            {item.title}
+                          </Link>
+
+                          <button
+                            type="button"
+                            onClick={() => removeFromCart(item.merchandiseId)}
+                            className="text-[0.7rem] tracking-[0.14em] opacity-60 hover:opacity-100"
+                          >
+                            remove
+                          </button>
+                        </div>
+
+                        {item.selectedColor && (
+                          <p className="mt-1 text-[0.7rem] tracking-[0.14em] opacity-70">
+                            color {item.selectedColor}
+                          </p>
+                        )}
+
+                        <div className="mt-1 flex items-baseline justify-between text-[0.7rem] tracking-[0.14em] opacity-80">
+                          <span>qty {item.quantity}</span>
+                          <span>
+                            {typeof item.price === 'number'
+                              ? `${item.price.toLocaleString('no-NO')} EUR`
+                              : 'on request'}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </ul>
             )}
 

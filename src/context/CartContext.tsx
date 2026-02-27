@@ -4,18 +4,21 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { Product } from '@/lib/products';
 
 type CartItem = {
-  id: string; // product id (your internal/product gid)
-  merchandiseId: string; // ✅ Shopify ProductVariant GID (required for checkout)
+  id: string;
+  merchandiseId: string;
   slug: string;
   title: string;
   price: number;
   quantity: number;
   image: string;
+  productPath?: string;
+  selectedColor?: string;
 };
-
 type ProductWithCartFields = Product & {
   price?: number;
-  merchandiseId?: string; // ✅ variant id comes from Shopify product query
+  merchandiseId?: string;
+  productPath?: string;
+  selectedColor?: string;
 };
 
 type CartContextValue = {
@@ -85,18 +88,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         );
       }
 
-      return [
-        ...prev,
-        {
-          id: product.id,
-          merchandiseId,
-          slug: product.slug,
-          title: product.title,
-          price,
-          quantity,
-          image: product.image,
-        },
-      ];
+return [
+  ...prev,
+  {
+    id: product.id,
+    merchandiseId,
+    slug: product.slug,
+    title: product.title,
+    price,
+    quantity,
+    image: product.image,
+    productPath: product.productPath,
+    selectedColor: product.selectedColor,
+  },
+];
     });
 
     setIsOpen(true);

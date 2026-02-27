@@ -42,6 +42,11 @@ type RelatedProduct = {
   priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
 };
 
+function clampInt(n: number, min: number, max: number) {
+  if (!Number.isFinite(n)) return min;
+  return Math.min(max, Math.max(min, Math.trunc(n)));
+}
+
 export default function ProductPage() {
   const { addToCart } = useCart();
 
@@ -55,6 +60,8 @@ export default function ProductPage() {
 
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [activeImageUrl, setActiveImageUrl] = useState<string | null>(null);
+
+  const [qty, setQty] = useState<number>(1);
 
   useEffect(() => {
     if (!productHandle) return;
@@ -179,6 +186,10 @@ export default function ProductPage() {
     });
   }, [product, selectedVariant]);
 
+  useEffect(() => {
+    setQty(1);
+  }, [productHandle]);
+
   if (!productHandle) {
     return (
       <main className="mx-auto max-w-5xl px-4 py-16">
@@ -302,6 +313,43 @@ export default function ProductPage() {
             </div>
           )}
 
+          <div className="space-y-2">
+            <p className="text-[0.7rem] tracking-[0.22em] text-text/70">quantity</p>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setQty((q) => clampInt(q - 1, 1, 99))}
+                className="h-10 w-10 border border-text/20 text-sm hover:border-text/50"
+                aria-label="Decrease quantity"
+              >
+                -
+              </button>
+
+              <input
+                inputMode="numeric"
+                value={qty}
+                onChange={(e) => {
+                  const next = Number(e.target.value);
+                  if (Number.isNaN(next)) return;
+                  setQty(clampInt(next, 1, 99));
+                }}
+                onBlur={() => setQty((q) => clampInt(q, 1, 99))}
+                className="h-10 w-16 border border-text/20 text-center text-sm outline-none focus:border-text/60"
+                aria-label="Quantity"
+              />
+
+              <button
+                type="button"
+                onClick={() => setQty((q) => clampInt(q + 1, 1, 99))}
+                className="h-10 w-10 border border-text/20 text-sm hover:border-text/50"
+                aria-label="Increase quantity"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
           <button
             type="button"
             disabled={!canAddToCart}
@@ -309,22 +357,25 @@ export default function ProductPage() {
               const merchId = selectedVariant?.id ?? product.variantId;
               if (!merchId) return;
 
-              addToCart(
-                {
-                  id: product.id,
-                  slug: product.handle,
-                  title: product.title,
-                  image: mainImg,
-                  merchandiseId: merchId,
-                  price: selectedVariant
-                    ? Number(selectedVariant.price.amount)
-                    : Number.isFinite(priceNumber)
-                      ? priceNumber
-                      : 0,
-                  selectedColor: selectedColor ?? undefined,
-                } as any,
-                1,
-              );
+              const safeQty = clampInt(qty, 1, 99);
+
+ addToCart(
+   {
+     id: product.id,
+     slug: product.handle,
+     productPath: `/shop/${collectionHandle}/${product.handle}`,
+     title: product.title,
+     image: mainImg,
+     merchandiseId: merchId,
+     price: selectedVariant
+       ? Number(selectedVariant.price.amount)
+       : Number.isFinite(priceNumber)
+         ? priceNumber
+         : 0,
+     selectedColor: selectedColor ?? undefined,
+   } as any,
+   safeQty,
+ );
             }}
             className={`w-full py-3 text-center text-[0.7rem] tracking-[0.25em] transition-colors ${
               canAddToCart

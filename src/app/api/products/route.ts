@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 // src/app/api/products/route.ts
 import { NextResponse } from 'next/server';
 import { shopifyFetch } from '@/lib/shopify';
