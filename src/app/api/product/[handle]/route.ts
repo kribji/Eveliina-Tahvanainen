@@ -14,7 +14,8 @@ const PRODUCT_BY_HANDLE = /* GraphQL */ `
         url
         altText
       }
-      images(first: 10) {
+
+      images(first: 50) {
         nodes {
           url
           altText
@@ -33,6 +34,10 @@ const PRODUCT_BY_HANDLE = /* GraphQL */ `
           selectedOptions {
             name
             value
+          }
+          image {
+            url
+            altText
           }
           price {
             amount
@@ -64,7 +69,7 @@ const PRODUCT_BY_HANDLE = /* GraphQL */ `
 function findColorOptionName(options: { name: string; values: string[] }[]) {
   const candidates = ['color', 'colour', 'väri', 'vari'];
   const hit = options.find((o) => candidates.includes(o.name.trim().toLowerCase()));
-  return hit?.name ?? null; // return the ACTUAL stored name (e.g. "Color")
+  return hit?.name ?? null;
 }
 
 export async function GET(req: Request, ctx: any) {
@@ -90,6 +95,7 @@ export async function GET(req: Request, ctx: any) {
             id: string;
             availableForSale: boolean;
             selectedOptions: { name: string; value: string }[];
+            image: { url: string; altText: string | null } | null;
             price: { amount: string; currencyCode: string };
           }[];
         };
@@ -111,7 +117,6 @@ export async function GET(req: Request, ctx: any) {
     }
 
     const pdt = data.product;
-
     const colorOptionName = findColorOptionName(pdt.options ?? []);
 
     const firstAvailableVariant =
@@ -128,14 +133,12 @@ export async function GET(req: Request, ctx: any) {
         alt: pdt.featuredImage?.altText ?? pdt.title,
         images: pdt.images.nodes,
 
-        // keep existing display price
         price: pdt.priceRange.minVariantPrice,
 
-        // NEW
         options: pdt.options ?? [],
-        colorOptionName, // e.g. "Color" (or "Väri")
+        colorOptionName,
         variants: pdt.variants?.nodes ?? [],
-        variantId: firstAvailableVariant?.id ?? null, // fallback
+        variantId: firstAvailableVariant?.id ?? null,
 
         dimensions: pdt.dimensions?.value ?? null,
         materials: pdt.materials?.value ?? null,

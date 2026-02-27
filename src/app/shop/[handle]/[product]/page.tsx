@@ -6,13 +6,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 
-/** Shopify types coming from /api/product/[handle] */
 type ShopifyOption = { name: string; values: string[] };
 
 type ShopifyVariant = {
   id: string;
   availableForSale: boolean;
   selectedOptions: { name: string; value: string }[];
+  image: { url: string; altText: string | null } | null;
   price: { amount: string; currencyCode: string };
 };
 
@@ -24,19 +24,11 @@ type ShopifyProduct = {
   image: string | null;
   alt: string;
   images: { url: string; altText: string | null }[];
-
-  // display price (minVariantPrice)
   price: { amount: string; currencyCode: string };
-
-  // fallback (first available variant id)
   variantId: string | null;
-
-  // variants/options
   options: ShopifyOption[];
-  colorOptionName: string | null; // e.g. "Color" or "Väri"
+  colorOptionName: string | null;
   variants: ShopifyVariant[];
-
-  // Metafields
   dimensions: string | null;
   materials: string | null;
   care: string | null;
@@ -62,6 +54,7 @@ export default function ProductPage() {
   const [loading, setLoading] = useState(true);
 
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [activeImageUrl, setActiveImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (!productHandle) return;
@@ -112,16 +105,6 @@ export default function ProductPage() {
     })();
   }, [collectionHandle, productHandle]);
 
-  const { mainImg, secondImg, priceLabel, priceNumber } = useMemo(() => {
-    const main = product?.image ?? product?.images?.[0]?.url ?? '/placeholder.jpg';
-    const second = product?.images?.[1]?.url ?? main;
-
-    const amount = product ? Number(product.price.amount) : NaN;
-    const label = Number.isFinite(amount) ? `${amount.toLocaleString('no-NO')} EUR` : 'on request';
-
-    return { mainImg: main, secondImg: second, priceLabel: label, priceNumber: amount };
-  }, [product]);
-
   const colors = useMemo(() => {
     if (!product?.colorOptionName) return [];
     const opt = product.options?.find((o) => o.name === product.colorOptionName);
@@ -162,6 +145,40 @@ export default function ProductPage() {
     );
   }, [product, selectedColor]);
 
+  const { priceLabel, priceNumber } = useMemo(() => {
+    const amount = product ? Number(product.price.amount) : NaN;
+    const label = Number.isFinite(amount) ? `${amount.toLocaleString('no-NO')} EUR` : 'on request';
+    return { priceLabel: label, priceNumber: amount };
+  }, [product]);
+
+  const galleryImages = useMemo(() => {
+    if (!product) return [];
+    const base = (product.images ?? []).map((i) => ({
+      url: i.url,
+      alt: i.altText ?? product.title,
+    }));
+
+    const variantUrl = selectedVariant?.image?.url ?? null;
+    if (variantUrl && !base.some((x) => x.url === variantUrl)) {
+      return [{ url: variantUrl, alt: selectedVariant?.image?.altText ?? product.title }, ...base];
+    }
+
+    return base;
+  }, [product, selectedVariant]);
+
+  useEffect(() => {
+    if (!product) return;
+
+    const variantImg = selectedVariant?.image?.url ?? null;
+    const fallback = product.image ?? product.images?.[0]?.url ?? null;
+
+    setActiveImageUrl((prev) => {
+      if (variantImg) return variantImg;
+      if (prev) return prev;
+      return fallback;
+    });
+  }, [product, selectedVariant]);
+
   if (!productHandle) {
     return (
       <main className="mx-auto max-w-5xl px-4 py-16">
@@ -183,6 +200,7 @@ export default function ProductPage() {
   }
 
   const canAddToCart = Boolean(selectedVariant?.id);
+  const mainImg = activeImageUrl ?? product.image ?? product.images?.[0]?.url ?? '/placeholder.jpg';
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-16 space-y-14">
@@ -209,15 +227,26 @@ export default function ProductPage() {
             />
           </div>
 
-          <div className="relative aspect-[4/5] w-full overflow-hidden bg-background/60">
-            <Image
-              src={secondImg}
-              alt={product.alt}
-              fill
-              className="object-cover"
-              sizes="(min-width: 1024px) 60vw, (min-width: 768px) 60vw, 100vw"
-            />
-          </div>
+          {galleryImages.length > 1 && (
+            <div className="grid grid-cols-4 gap-3">
+              {galleryImages.map((img) => {
+                const active = img.url === mainImg;
+                return (
+                  <button
+                    key={img.url}
+                    type="button"
+                    onClick={() => setActiveImageUrl(img.url)}
+                    className={`relative aspect-square overflow-hidden border ${
+                      active ? 'border-text' : 'border-text/15 hover:border-text/40'
+                    }`}
+                    aria-label="Select image"
+                  >
+                    <Image src={img.url} alt={img.alt} fill className="object-cover" sizes="25vw" />
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         <section className="w-full space-y-6 md:w-[40%]">
@@ -247,7 +276,18 @@ export default function ProductPage() {
                     <button
                       key={c}
                       type="button"
-                      onClick={() => setSelectedColor(c)}
+                      onClick={() => {
+                        setSelectedColor(c);
+                        const v =
+                          product.variants?.find((vv) =>
+                            vv.selectedOptions?.some(
+                              (so) => so.name === product.colorOptionName && so.value === c,
+                            ),
+                          ) ?? null;
+
+                        if (v?.image?.url) setActiveImageUrl(v.image.url);
+                        else setActiveImageUrl(null);
+                      }}
                       className={`px-3 py-2 text-[0.7rem] tracking-[0.18em] border transition ${
                         active
                           ? 'border-text bg-text text-background'
@@ -274,7 +314,7 @@ export default function ProductPage() {
                   id: product.id,
                   slug: product.handle,
                   title: product.title,
-                  image: product.image ?? product.images?.[0]?.url ?? '/placeholder.jpg',
+                  image: mainImg,
                   merchandiseId: merchId,
                   price: selectedVariant
                     ? Number(selectedVariant.price.amount)
