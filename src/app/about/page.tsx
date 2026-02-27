@@ -16,13 +16,15 @@ export default function AboutPage() {
 
       <section className="space-y-6 text-sm leading-relaxed md:text-base">
         <p>
-          Eveliina Tahvanainen is a Finnish designer and artist working with glass and ceramics. Her
-          work grows from a curiosity about natural forms — how time, weather, and touch shape the
-          world around us.
+          Eveliina is a Finnish glass and ceramic designer whose work is inspired by organic forms,
+          everyday beauty and human experience. She transforms traditional materials into
+          contemporary, thoughtful pieces that brings out curiosity.
         </p>
         <p>
-          She explores the intersection between structure and spontaneity, drawing inspiration from
-          organic forms, natural erosion, and the quiet transformation of materials.
+          She holds a degree as a Visual Artisan and a Bachelor of Culture and Arts in Smart and
+          Sustainable Design. Her practice is guided by circular design principles and she is often
+          using recycled and upcycled materials. The fluidity and balance of nature shape both the
+          form and technique of her work.
         </p>
       </section>
 
@@ -41,7 +43,7 @@ export default function AboutPage() {
 
         <div className="relative aspect-[4/5] w-full overflow-hidden">
           <Image
-            src="/main-piece.jpeg"
+            src="/volcanic-home.jpeg"
             alt="Sculpture in a rocky landscape"
             fill
             className="object-cover"
@@ -53,17 +55,9 @@ export default function AboutPage() {
 
       <section className="space-y-6 text-sm leading-relaxed md:text-base">
         <p>
-          In 2023, her piece <em>Volcanic Home</em> was recognized as The Most Interesting
-          Phenomenon at the Habitare Fair in Helsinki. Dedicated to sustainability and circular
-          design, Eveliina continues to evolve her practice through a close relationship with
-          nature, guided by curiosity, patience, and a deep respect for materials.
-        </p>
-        <p>
-          With a degree in Culture and Arts, specializing in glass and ceramics, Eveliina challenges
-          the boundaries of traditional craftsmanship through experimentation — particularly with
-          foam glass, a recycled material that merges fragility and resilience. By uncovering the
-          potential of glass in its most elemental state, she develops textures and surfaces that
-          feel both raw and otherworldly.
+          Eveliina’s work has been exhibited in Finland, Portugal, and at Milan Design Week. In
+          2023, her foam glass piece <em>Volcanic Home</em> was nominated as The most interesting phenomenon at Habitare,
+          reflecting her ongoing exploration of sustainability and material expression.
         </p>
       </section>
     </div>

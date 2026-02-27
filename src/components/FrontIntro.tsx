@@ -7,9 +7,9 @@ export default function FrontIntro() {
         </p>
 
         <p className="mt-10 text-[1.05rem] tracking-[0.18em] text-text/70">
-          Rooted in material exploration, each object balances softness, weight,
+          Contemporary glass and ceramic pieces with Nordic touch. Designed for interiors, spaces
           <br className="hidden sm:block" />
-          and form.
+          and thoughtful living.
         </p>
       </div>
     </section>
