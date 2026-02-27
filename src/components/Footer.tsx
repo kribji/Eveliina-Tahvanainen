@@ -7,7 +7,7 @@ export default function Footer() {
         {/* ICONS — centered */}
         <div className="flex justify-center gap-8 text-2xl">
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/ev.eveliinastudio/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
@@ -16,7 +16,7 @@ export default function Footer() {
             <FaInstagram />
           </a>
           <a
-            href="https://facebook.com"
+            href="https://www.facebook.com/profile.php?id=61586602671505&mibextid=wwXIfr&rdid=YktogYa9oLhxsRhx&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1CbEQXdi42%2F%3Fmibextid%3DwwXIfr#"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
